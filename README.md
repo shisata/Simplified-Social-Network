@@ -17,6 +17,7 @@ docker-compose down && docker system prune -f
 ## Folder Structure
   - Static files: `views/`
   - Server files: `models/`
+  - Database: MongoDB
   
 ## Citation
 ```
