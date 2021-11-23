@@ -20,8 +20,8 @@ docker-compose down && docker system prune -f
   - Database: MongoDB
   
 ## Citation
-```
 This project base is modified from an existing tutorial/template code
+```
 Tutorial: https://youtu.be/hP77Rua1E0c
 Code: https://github.com/bradtraversy/docker-node-mongo
 ```
