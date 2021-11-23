@@ -1,9 +1,6 @@
-## Citation
-```
-This project base is modified from an existing tutorial/template code
-Tutorial: https://youtu.be/hP77Rua1E0c
-Code: https://github.com/bradtraversy/docker-node-mongo
-```
+## What is this project about?
+A simplified social network webapp
+<more description>
 
 ## How to run
 ```
@@ -21,3 +18,9 @@ docker-compose down && docker system prune -f
   - Static files: `views/`
   - Server files: `models/`
   
+## Citation
+```
+This project base is modified from an existing tutorial/template code
+Tutorial: https://youtu.be/hP77Rua1E0c
+Code: https://github.com/bradtraversy/docker-node-mongo
+```
