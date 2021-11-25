@@ -1,0 +1,19 @@
+<%- include('header') %>
+
+<p> Welcome <%= user.fname %> <%= user.lname %></p><br>
+<button class="btn" onclick="window.location.href='/logout';">logout</button>
+<body>
+    <div>
+        <h1>All users</h1>
+        <ul>
+            <% users.forEach(function(user) { %>
+                <li>
+                    <%= user.email %>
+                    <br>
+                    <%= user.date %>
+                </li>
+                <% }); %>
+        </ul>
+    </div>
+    
+</body>

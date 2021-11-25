@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>NodeJS App</title>
-</head>
+<%- include('header') %>
 
 <body>
-  <h1>NodeJS App</h1>
-  <form method="post" action="/item/add">
-    <label for="name">Name</label>
-    <input type="text" name="name">
-    <input type="submit" value="Add">
-  </form>
-  <h4>Items:</h4>
-  <ul>
-    <% items.forEach(function(item) { %>
-      <li>
-        <%= item.name %>
-      </li>
-      <% }); %>
-  </ul>
+  <div>
+    <h1>Name</h1>
+    <button class="btn" onclick="window.location.href='/login';">Login</button>
+    <br>
+    <br>
+    <button class="btn" onclick="window.location.href='/register';">Register</button>
+    <br>
+    <br>
+    <button class="btn" onclick="window.location.href='admin';">Admin</button>
+  </div>
+
+
 </body>
 
 </html>
