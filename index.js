@@ -50,8 +50,12 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/admin',ensureAuthenticated,(req, res) => {
+  u = req.user;
+  u.active = true;
+  u.save();
+
   User.find()
-    .then(users => res.render('admin',{users,user:req.user}))
+    .then(users => res.render('admin',{users,user:u}))
 
 });
 
@@ -126,6 +130,9 @@ app.post('/register', (req, res) => {
 });
 
 app.get('/logout', (req, res)=>{
+  u = req.user;
+  u.active = false;
+  u.save();
   req.logout();
   req.flash('success_msg','You have now logged out!');
   res.redirect('/')

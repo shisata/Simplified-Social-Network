@@ -17,9 +17,13 @@ const UserSchema = new Schema({
   lname:{
     type:String
   },
-  date :{
+  date:{
     type:Date,
     default: Date.now
+  },
+  active:{ 
+    type:Boolean,
+    default: false
   }
 
 })

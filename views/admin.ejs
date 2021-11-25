@@ -1,6 +1,10 @@
 <%- include('header') %>
 
-<p> Welcome <%= user.fname %> <%= user.lname %></p><br>
+<h2> Welcome <%= user.fname %></h2>
+<p>Email : <%= user.email %></p>
+<p>First Name : <%= user.fname %> </p>
+<p>Last Name : <%= user.lname %> </p>
+<p>Registe Time:<%= user.date %> </p>
 <button class="btn" onclick="window.location.href='/logout';">logout</button>
 <body>
     <div>
@@ -9,8 +13,11 @@
             <% users.forEach(function(user) { %>
                 <li>
                     <%= user.email %>
-                    <br>
-                    <%= user.date %>
+                    <% if(user.active==true) { %>
+                        online
+                        <% } else { %>
+                            offline
+                            <% } %>
                 </li>
                 <% }); %>
         </ul>
