@@ -1,27 +1,50 @@
+/****
+General guideline for this project:
+ - Put a comment in codes/functions declaration describing its purpose. Especially complicated ones.
+ - Group functions/code in category so the code is easy to read
+ - If you find some pieces of codes from someone that don't work for you, comment it out and add your modified code if the person is not aware of changes.
+ - Put all backend .js files into models
+ - Put all .ejs files into views
+****/
+
+////// Dependencies
 const express = require('express');
 const mongoose = require('mongoose');
-var bcrypt = require('bcryptjs');
 const session = require('express-session');
 const flash = require('connect-flash');
-const passport = require('passport');
-const {ensureAuthenticated} = require('./auth.js')
+const path = require('path');
+
+var bcrypt = require('bcryptjs'); // Encryption for password
+const passport = require('passport'); // Handles login ?
+const {ensureAuthenticated} = require('./models/auth.js') // Authentication for login ?
+const User = require('./models/User'); // Schema for User using mongoose
+const Post = require('./models/Post');
+// const Chat = require('./models/chat') // Handles chat logic
+
+var http = require('http');
+var socketIO = require('socket.io'); // For live connection when doing live chat
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
-app.set('view engine', 'ejs');
+
+app.set('view engine', 'ejs'); // Set .ejs as static file, will automatically look into views folder for .ejs
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public')); // Set public as folder for static file (css)
 app.use(session({
   secret: 'secret',
   resave: true,
   saveUninitialized:true
 }));
 
+/////// <some description>
 app.use(passport.initialize());
 app.use(passport.session());
-require("./passport")(passport);
+require("./models/passport")(passport);
 
+/////// <some description>
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
@@ -29,19 +52,21 @@ app.use((req, res, next) => {
   res.locals.error = req.flash('error');
 next();
 })
-// Connect to MongoDB
+
+/////// Connect to MongoDB
+originalDBURL = 'mongodb://mongo:27017/docker-node' //connection to local container mongo through port 27017 
+chrisDBURL = 'mongodb+srv://user11:Shengjin1@cluster0.dxk2z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 mongoose
   .connect(
-    'mongodb+srv://user11:Shengjin1@cluster0.dxk2z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', //connection to local container mongo through port 27017 
+    chrisDBURL, 
     { useNewUrlParser: true,useUnifiedTopology: true}
   )
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-const User = require('./models/User');
-const Post = require('./models/Post')
 
 
+/////// Access URL controller
 app.get('/', (req, res) =>{
   res.render('index', {});
 });
@@ -60,10 +85,50 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
 
 });
 
+
 app.get('/login', (req, res) => {
   res.render('login',{})
 });
 
+app.get('/logout', (req, res)=>{
+  u = req.user;
+  u.active = false;
+  u.save();
+  req.logout();
+  req.flash('success_msg','You have now logged out!');
+  res.redirect('/')
+})
+
+app.get('/chat',(req, res) => {
+  //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
+  user_data = { // dummy data 
+    name : "Dummy_user"
+  }
+  res.render('chat',{user_data})
+  // var user_name = 'dummy'
+  // console.log('chat page')
+});
+
+///// SocketIO listen to connection when client call io()
+io.on('connection', function(socket) { 
+  // Emit welcome message to current user
+  console.log("Detect connection from: ", socket.id);
+
+  // Listen for message from 
+  // socket.on('message', handleMessage(message));
+  socket.on('message', function(data) {
+    console.log(data);
+    io.emit('incoming-message', data); 
+    // handleMessage(user_id, message);
+  });
+
+  socket.on('disconnect', function(){
+    console.log("Disconnection from: ", socket.id);
+    // io.emit('message', handleMessage('', user_name + ' is offline!!')) // emits message to everyone
+  });
+});
+
+/////// Post to URL controller
 app.post('/login', (req, res, next) => {
   passport.authenticate("local",{
     successRedirect : '/admin',
@@ -130,14 +195,6 @@ app.post('/register', (req, res) => {
   
 });
 
-app.get('/logout', (req, res)=>{
-  u = req.user;
-  u.active = false;
-  u.save();
-  req.logout();
-  req.flash('success_msg','You have now logged out!');
-  res.redirect('/')
-})
 
 
 
@@ -176,4 +233,7 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
 
 const port = 3000;
 
-app.listen(port, () => console.log('Server running...'));
+
+const PORT = 3000; //Port of backend container
+
+server.listen(PORT, () => console.log('Server running...'));
