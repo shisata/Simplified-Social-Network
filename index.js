@@ -39,6 +39,7 @@ mongoose
   .catch(err => console.log(err));
 
 const User = require('./models/User');
+const Post = require('./models/Post')
 
 
 app.get('/', (req, res) =>{
@@ -137,6 +138,30 @@ app.get('/logout', (req, res)=>{
   req.flash('success_msg','You have now logged out!');
   res.redirect('/')
 })
+
+
+// Profile Related
+
+// Get "My" profile
+app.get('/users/profile', (req, res) => {
+  Post.find()
+    .then(posts => res.render('profile_page.ejs', { posts }))
+    .catch(err => res.status(404).json({ msg: 'No Posts found' }));
+
+});
+
+
+// Submit a Post to "My" profile
+app.post('/profile/post', (req, res) => {
+  const newPost = new Post({
+    Title: req.body.Title,
+    Body: req.body.Body
+  })
+
+  newPost.save().then(post => res.redirect('/users/profile'));
+
+});
+
 
 const port = 3000;
 

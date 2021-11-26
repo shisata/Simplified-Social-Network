@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <title>Profile</title>
+</head>
+<% if(typeof errors!='undefined'){ %>
+<%      errors.forEach(function(error) { %>
+<p class="error"><%=  error.msg           %></p>
+<% }) %>
+<% } %>
+
+<% if(success_msg!=''){ %>
+  <p class="error"><%=  success_msg %> </p>         
+  <% } %>
+
+  <% if(error_msg!=''){ %>
+    <p class="error"><%=  error_msg %> </p>         
+    <% } %>
+
+
+<!-- 
+  Profile Page
+
+  1. User can add others as a friend
+  2. Friends can see each other's posts
+  3. Privacy can be changed to Public, Friends or Private
+  
+-->
+
+<!-- 
+    Profile Page:
+
+    Show User Information (Photo, Name, Status) on the top
+    Add 'Menu' and 'Friends' sidebars.
+    Add Post Privacy settings if viewing own page.
+    Add Scrolling for the page.
+
+    Post Model:
+
+    Add 'Like', 'Comment', 'Privacy' fields
+
+
+    Other:
+    
+    Styling
+    Standardise Post / SideBar fields.
+
+-->
+
+
+<body>
+  <h1>My Profile</h1>
+
+  <div>
+
+  <form action="/profile/post" method="POST">
+    <fieldset>
+      <h3>New Post</h3>
+      <label>Title</label>
+      <input type ="text" id = 'Title' name="Title" required>
+      
+      <br><br>
+
+      <label>Body</label>
+      <input type ="text" id = 'Body' name="Body" required>
+      
+      <label>Attachment</label>
+      <input type ="text" id = 'Img' name="Img">
+    
+      <button type ="reset" class="btn">Reset</button>
+      <button type ="submit" class="btn">Submit</button>
+    </fieldset>
+  </form>
+
+
+  <h4>My Posts:</h4>
+  <ul>
+    <% posts.forEach(function(post) { %>
+      <li>
+        <%= post.Title %>
+        <%= post.Body %>
+        <%= post.date %>
+      </li>
+      <% }); %>
+  </ul>
+  
+
+
+</body>
+
+</html>
