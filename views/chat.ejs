@@ -1,13 +1,52 @@
 <!-- Chat page -->
 <%- include('header') %>
+<script src="/socket.io/socket.io.js"></script>
+<!-- <script href="./models/chat.js" type="javascript"></script> -->
 <h1> Chat</h1>
+<%- include('menu_buttons') %>
 
-<div name="chat-display-div">
+<div id="chat-display-div">
 
 </div>
 <div class="chat-input-div">
     <form id="chat-input-form">
-        <input id = "message" type = "text" placeholder = "Enter message.." required/>
-        <button class="btn">Send</button>
+        <input id = "message-content" type = "text" placeholder = "Enter message.." required/>
+        <button id = "send-button" class="btn">Send</button>
     </form>
 </div>
+
+<script>
+    ////// SocketIO
+    const socket = io();
+    var display = document.getElementById('chat-display-div')
+    
+    // Just dummy functions to give server data
+    user_data = {
+        name:"dummy user"
+    }
+    data = {
+        user_data,
+        message : 'Just connected to chat!!'
+    }
+    socket.emit('message', data);
+
+   // Send message from text box
+   function sendMessage(){
+        var message = document.getElementById('message-content').value;
+        // console.log("found value: " + message);
+        data.message = message;
+        socket.emit('message', data);
+        console.log(data);
+    }
+
+    // Listen to incoming message and display it
+    socket.on('incoming-message', function(data){
+        var content_div = document.createElement("div");
+        var user_node = document.createTextNode(data.user_data.name + ": ");
+        var msg_node = document.createTextNode(data.message);
+        content_div.appendChild(user_node);
+        content_div.appendChild(msg_node);
+        display.appendChild(content_div);
+    })
+
+</script>

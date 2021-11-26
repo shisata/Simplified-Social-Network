@@ -7,22 +7,28 @@ General guideline for this project:
  - Put all .ejs files into views
 ****/
 
+////// Dependencies
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('connect-flash');
+const path = require('path');
 
 var bcrypt = require('bcryptjs'); // Encryption for password
 const passport = require('passport'); // Handles login ?
 const {ensureAuthenticated} = require('./models/auth.js') // Authentication for login ?
 const User = require('./models/User'); // Schema for User using mongoose
+// const Chat = require('./models/chat') // Handles chat logic
 
-// const http = require('http');
-// const socker = require('http');
+var http = require('http');
+var socketIO = require('socket.io'); // For live connection when doing live chat
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
-app.set('view engine', 'ejs');
+
+app.set('view engine', 'ejs'); // Set .ejs as static file, will automatically look into views folder for .ejs
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public')); // Set public as folder for static file (css)
@@ -78,10 +84,48 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
 
 });
 
+
 app.get('/login', (req, res) => {
   res.render('login',{})
 });
 
+app.get('/logout', (req, res)=>{
+  u = req.user;
+  u.active = false;
+  u.save();
+  req.logout();
+  req.flash('success_msg','You have now logged out!');
+  res.redirect('/')
+})
+
+app.get('/chat',(req, res) => {
+  //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
+  user_data = { // dummy data 
+    name : "Dummy_user"
+  }
+  res.render('chat',{user_data})
+  // var user_name = 'dummy'
+  // console.log('chat page')
+});
+
+///// SocketIO listen to connection when client call io()
+io.on('connection', function(socket) { 
+  // Emit welcome message to current user
+  console.log("Detect connection from: ", socket.id);
+
+  // Listen for message from 
+  // socket.on('message', handleMessage(message));
+  socket.on('message', function(data) {
+    console.log(data);
+    io.emit('incoming-message', data); 
+    // handleMessage(user_id, message);
+  });
+
+  socket.on('disconnect', function(){
+    console.log("Disconnection from: ", socket.id);
+    // io.emit('message', handleMessage('', user_name + ' is offline!!')) // emits message to everyone
+  });
+});
 
 /////// Post to URL controller
 app.post('/login', (req, res, next) => {
@@ -150,17 +194,9 @@ app.post('/register', (req, res) => {
   
 });
 
-app.get('/logout', (req, res)=>{
-  u = req.user;
-  u.active = false;
-  u.save();
-  req.logout();
-  req.flash('success_msg','You have now logged out!');
-  res.redirect('/')
-})
 
 
 
 const PORT = 3000; //Port of backend container
 
-app.listen(PORT, () => console.log('Server running...'));
+server.listen(PORT, () => console.log('Server running...'));
