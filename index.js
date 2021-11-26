@@ -140,27 +140,38 @@ app.get('/logout', (req, res)=>{
 })
 
 
-// Profile Related
 
-// Get "My" profile
-app.get('/users/profile', (req, res) => {
-  Post.find()
-    .then(posts => res.render('profile_page.ejs', { posts }))
+// Get "My" profile when Auntheticated
+// Ensure only "My" posts are displayed
+
+app.get('/profile', ensureAuthenticated, (req, res) => {
+
+  u = req.user;
+
+  Post.find({owner: u.email})
+    .then(posts => res.render('profile_page.ejs', { posts, user:u }))
     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
 
 });
 
 
-// Submit a Post to "My" profile
-app.post('/profile/post', (req, res) => {
+// Submit a Post to "My" profile when Authenticated
+// Mark post with the Owner attribute (User's email address)
+
+app.post('/profile/post', ensureAuthenticated, (req, res) => {
+
+  u = req.user;
+
   const newPost = new Post({
     Title: req.body.Title,
-    Body: req.body.Body
+    Body: req.body.Body,
+    owner: u.email
   })
 
-  newPost.save().then(post => res.redirect('/users/profile'));
+  newPost.save().then(post => res.redirect('/profile'));
 
 });
+
 
 
 const port = 3000;
