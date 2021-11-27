@@ -77,12 +77,22 @@ app.get('/register', (req, res) => {
 
 app.get('/admin',ensureAuthenticated,(req, res) => {
   u = req.user;
+  console.log(u);
   u.active = true;
   u.save();
 
-  User.find()
-    .then(users => res.render('admin',{users,user:u}))
+  //let parameters = new Object();
+  //parameters["user"] = u;
 
+  Post.find().sort({date:-1}).then(posts=>{
+    User.find().then(users=>{
+      res.render('admin',{posts:posts,users:users,user:u})
+    });
+  });
+
+    //.then(users => parameters[]=user)
+
+  
 });
 
 
@@ -205,7 +215,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 
   u = req.user;
 
-  Post.find({owner: u.email})
+  Post.find({owner: u.email}).sort({date:-1})
     .then(posts => res.render('profile_page.ejs', { posts, user:u }))
     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
 
