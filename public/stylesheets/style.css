@@ -8,6 +8,10 @@
   color:red;
   font-size: large;
 }
+p { 
+  text-shadow: 1px 1px 1px #000, 3px 3px 5px peru;
+
+}
 
 input[type=text],input[type=email],input[type=password], select {
     width: 100%;
@@ -38,4 +42,10 @@ input[type=text],input[type=email],input[type=password], select {
     border-radius: 5px;
     background-color: #f2f2f2;
     padding: 20px;
+    box-shadow:
+        0 1px 1px rgba(0,0,0,0.15), /* The top layer shadow */
+        0 10px 0 -5px #eee, /* The second layer */
+        0 10px 1px -4px rgba(0,0,0,0.15), /* The second layer shadow */
+        0 20px 0 -10px #eee, /* The third layer */
+        0 20px 1px -9px rgba(0,0,0,0.15); /* The third layer shadow */
   }
