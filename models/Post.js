@@ -3,6 +3,13 @@ const Schema = mongoose.Schema;
 
 
 const PostSchema = new Schema({
+
+  // Generated at creation
+  id: {
+    type: Number,
+    required: true
+  },
+
   Title: {
     type: String,
     required: true
@@ -18,15 +25,23 @@ const PostSchema = new Schema({
     default: Date.now
   },
 
-  owner: {
+  // Public, Private or Friends Only
+  privacy: {
     type: String,
     required: true
-  }
+  },
 
-  // Add Attachments
-  // Count Likes
-  // Store comments
-  // Set Privacy
+  // User IDs
+  likes: {
+    type: Array,
+    default: []
+  },
+
+  // Comment IDs
+  comments: {
+    type: Array,
+    default: []
+  }
 
 });
 

@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 
 const UserSchema = new Schema({
+  id:{
+    type: Number,
+    required: true
+  },
   email:{
     type:String,
     required: true
@@ -25,7 +29,11 @@ const UserSchema = new Schema({
   active:{ 
     type:Boolean,
     default: false
+  },
+  friends_list:{
+    type: Array,
+    default:[],
   }
-
+  
 })
 module.exports = User = mongoose.model('user', UserSchema);
