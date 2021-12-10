@@ -56,9 +56,10 @@ next();
 /////// Connect to MongoDB
 originalDBURL = 'mongodb://mongo:27017/docker-node' //connection to local container mongo through port 27017 
 chrisDBURL = 'mongodb+srv://user11:Shengjin1@cluster0.dxk2z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+joshDBURL = 'mongodb+srv://guest:guest@cluster0.fjr7b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 mongoose
   .connect(
-    chrisDBURL, 
+    joshDBURL, 
     { useNewUrlParser: true,useUnifiedTopology: true}
   )
   .then(() => console.log('MongoDB Connected'))
@@ -109,7 +110,7 @@ app.get('/logout', (req, res)=>{
   res.redirect('/')
 })
 
-app.get('/chat',(req, res) => {
+app.get('/chat',ensureAuthenticated, (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
   user_data = { // dummy data 
     name : "Dummy_user"

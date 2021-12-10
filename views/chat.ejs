@@ -1,18 +1,19 @@
 <!-- Chat page -->
-<%- include('header') %>
+<%- include('./partials/header') %>
 <script src="/socket.io/socket.io.js"></script>
 <!-- <script href="./models/chat.js" type="javascript"></script> -->
 <h1> Chat</h1>
-<%- include('menu_buttons') %>
+<%- include('./partials/menu_buttons') %>
 
 <div id="chat-display-div">
 
 </div>
 <div class="chat-input-div">
-    <form id="chat-input-form">
+    <!-- <form id="chat-input-form"> -->
         <input id = "message-content" type = "text" placeholder = "Enter message.." required/>
-        <button id = "send-button" class="btn">Send</button>
-    </form>
+        <!-- <textarea name="message-content" id="message-content" placeholder="Enter message..." cols="30" rows="10"></textarea> -->
+        <button id = "send-button" class="btn" onclick="sendMessage()">Send</button>
+    <!-- </form> -->
 </div>
 
 <script>
@@ -47,6 +48,19 @@
         content_div.appendChild(user_node);
         content_div.appendChild(msg_node);
         display.appendChild(content_div);
+        message_content.value = '';
     })
+
+    var message_content = document.getElementById("message-content");
+    message_content.addEventListener('keyup', function (event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            sendMessage();
+            message_content.value = '';
+        }
+    });
+
+    // e.key is the modern way of detecting keys
+    // e.keyCode is deprecated (left here for for legacy browsers support)
+    // keyup is not compatible with Jquery select(), Keydown is.
 
 </script>
