@@ -43,19 +43,19 @@ const UserSchema = new Schema({
     default: []
   },
 
-  // Message IDs sent by a user
-  messages:{
+  // Message logs for conversation with each user (each message_log has many message transactions)
+  message_logs:{
     type: [mongoose.ObjectId],
     default: []
   },
 
-  // Stories IDs posted by a user
+  // Stories IDs posted by this user
   stories:{
     type: [mongoose.ObjectId],
     default: []
   },
 
-  // Setting Object ID for a current user
+  // Setting ObjectId for the current user
   setting:{
     type: mongoose.ObjectId,
     required: true

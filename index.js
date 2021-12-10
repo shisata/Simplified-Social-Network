@@ -20,6 +20,8 @@ const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for 
 const User = require('./models/User'); // Schema for User using mongoose
 const Post = require('./models/Post');
 // const Chat = require('./models/chat') // Handles chat logic
+const MessageLog = require('./models/MessageLog');
+const Message = require('./models/Message');
 
 var http = require('http');
 var socketIO = require('socket.io'); // For live connection when doing live chat
@@ -264,10 +266,6 @@ app.get('/friends', ensureAuthenticated, (req, res) => {
 // Cancel a friend request sent by me
 
 
-
-
-
-const port = 3000;
 
 
 const PORT = 3000; //Port of backend container
