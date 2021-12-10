@@ -1,65 +1,43 @@
-//// File description: Schema for User in MongoDB
+//// Story Schema for each user, unfinnished, needs more fields
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const UserSchema = new Schema({
+const StorySchema = new Schema({
 
-  // ObjectID attribute is attached automatically as _id
-  
-
-  email:{
+  title:{
     type:String,
     required: true
   },
-  password:{
-    type:String,
-    required: true
-  },
-  fname:{
-    type:String
-  },
-  lname:{
-    type:String
-  },
+
+  // Expires after 24 hours 
   date:{
-    type:Date,
+    type: Date,
     default: Date.now
   },
-  active:{ 
-    type:Boolean,
+
+  // Story is archived (hidden) after expiration
+  archived: {
+    type: Boolean,
     default: false
   },
 
-  // Keeping a friend list by Object IDs
-  friends_list:{
+  // Temporary content, needs to have something else (Video, Image)
+  content:{
+    type: String,
+    required: true
+  },
+
+  // list of user_id that have seen this story
+  seen_list:{
     type: [mongoose.ObjectId],
     default:[]
   },
 
-  // Post IDs belonging to a user
-  posts:{
-    type: [mongoose.ObjectId],
-    default: []
-  },
-
-  // Message IDs sent by a user
-  messages:{
-    type: [mongoose.ObjectId],
-    default: []
-  },
-
-  // Stories IDs posted by a user
-  stories:{
-    type: [mongoose.ObjectId],
-    default: []
-  },
-
-  // Setting Object ID for a current user
-  setting:{
-    type: mongoose.ObjectId,
+  privacy:{
+    type: String,
     required: true
   }
 
 })
-module.exports = User = mongoose.model('user', UserSchema);
+module.exports = Story = mongoose.model('story', StorySchema);
