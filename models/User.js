@@ -4,10 +4,9 @@ const Schema = mongoose.Schema;
 
 
 const UserSchema = new Schema({
-  id:{
-    type: Number,
-    required: true
-  },
+
+  // ObjecID attribute is attached automatically as _id
+
   email:{
     type:String,
     required: true

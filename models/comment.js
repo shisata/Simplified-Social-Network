@@ -5,10 +5,8 @@ const Schema = mongoose.Schema;
 
 const commentSchema = new Schema({
     
-  id:{
-    type: Number,
-    required: true
-  },
+  // ObjectID attached automatically as _id
+
   user_id:{
     type: Number,
     required: true

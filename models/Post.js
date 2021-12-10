@@ -4,11 +4,7 @@ const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
 
-  // Generated at creation
-  id: {
-    type: Number,
-    required: true
-  },
+  // ObjecID attribute is attached automatically as _id
 
   Title: {
     type: String,
