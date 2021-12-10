@@ -7,7 +7,6 @@ const UserSchema = new Schema({
 
   // ObjectID attribute is attached automatically as _id
   
-
   email:{
     type:String,
     required: true

@@ -15,45 +15,60 @@
 <% } %>
 
 <% if(success_msg!=''){ %>
-  <p class="error"><%=  success_msg %> </p>         
-  <% } %>
+<p class="error"><%=  success_msg %> </p>         
+<% } %>
 
-  <% if(error_msg!=''){ %>
-    <p class="error"><%=  error_msg %> </p>         
-    <% } %>
-
-
-
-
-<!-- Search for a user by their email -->
+<% if(error_msg!=''){ %>
+<p class="error"><%=  error_msg %> </p>         
+<% } %>
 
 
 
-<!-- Check for friend Requests in my name -->
-
-
-<!-- Friend List  --> 
-
+<!-- List All friends of a user --> 
 
 <body>
+    <h1>Friends</h1>
+
     <%- include('menu_buttons') %>
+
+    <!-- Sends a request by an ObjectId -->
+    <!-- TODO: CHANGE TO A SEARCH & ADD INSTEAD -->
+    <form action="/friends/add" method="POST">
+        <fieldset>
+        <h3>Add by ObjectId</h3>
+        <label>Friend ObjectID</label>
+        <input type ="receiver_id" id = 'receiver_id' name="receiver_id" required>
+        
+        <button type ="Submit" class="btn">Send Request</button>
+
+        </fieldset>
+    </form>
+
+    <!-- Check for Incoming Friend Requests -->
+    <!-- Redirects to a different page -->
+    <div>
+        <button class="btn" onclick="window.location.href='/friends/requests';">Check Incoming Requests</button>
+    </div>
+    
     <div>
         <h1>My Friends</h1>
         <ul>
-            <% user.forEach(function(user) { %>
+            
+            <!-- Lists emails of ALL USERS -->
+            <!-- TO-DO: ONLY SHOW USER's Friends -->
+            <!-- TO-DO: Add profile links -->
+
+            <% users.forEach(function(user) { %>
                 <li>
-                    <%= user.email %>
-                    <% if(user.active==true) { %>
-                        online
-                        <% } else { %>
-                            offline
-                            <% } %>
-                    <%= user.email %>
+                    <%= user.email %>                  
                 </li>
-            <% }); %>
+
+                <% }); %>
+
         </ul>
     </div>
     
 </body>
+
 
 </html>

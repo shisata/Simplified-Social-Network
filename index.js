@@ -19,6 +19,7 @@ const passport = require('passport'); // Handles login ?
 const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for login ?
 const User = require('./models/User'); // Schema for User using mongoose
 const Post = require('./models/Post');
+const Request = require('./models/Request'); // Friend Requests
 // const Chat = require('./models/chat') // Handles chat logic
 
 var http = require('http');
@@ -213,9 +214,8 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 
 });
 
-
 // Submit a Post to "My" profile when Authenticated
-// Mark post with the Owner attribute (User's email address)
+// TO-DO: Set Post privacy
 
 app.post('/profile/post', ensureAuthenticated, (req, res) => {
 
@@ -231,33 +231,62 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
 
 });
 
+
+// TO-DO
 // Add a comment to a post
+
 
 
 // FRIENDS PAGE
 
+// TO-DO: Only Show friends of a current user
 app.get('/friends', ensureAuthenticated, (req, res) => {
 
   u = req.user;
   
+  // TO-DO: Search for Users contained in user.friends_list
+
   User.find()
-    .then(friends => res.render('friends.ejs', {friends, user:u }))
-    .catch(err => res.status(404).json({ msg: 'No Friends found' }));
+    .then(users => res.render('friends.ejs',{ users, user:u }))
+
 })
 
 
-// Get friends list
+// Make a friend request
+// Creates a Request object
+app.post('/friends/add', ensureAuthenticated, (req, res) => {
+  
+  u = req.user;
 
-// Create a friend Request record
+  const friend_req = new Request({
+    sender_id: u._id,
+    receiver_id: req.body.receiver_id,
+    receiver_agree: req.body.receiver_agree
+  })
+
+  friend_req.save().then(request => res.redirect('/friends'));
+})
 
 
-// Cancel a friend request sent by me
+// Check for Incoming Friend Requests
+app.get('/friends/requests', ensureAuthenticated, (req, res) => {
+
+  u = req.user;
+  
+  Request.find({receiver_id : u._id})
+    .then(requests => res.render('request_check.ejs',{requests, user:u }))
+    .catch(err => res.status(404).json({ msg: 'No Requests Found' }));
+
+})
+
+// Remove an existing friend
+// app.post('/friends/remove', ensureAuthenticated, (req, res) => {
+// })
 
 
 
 
 
-const port = 3000;
 
 
 const PORT = 3000; //Port of backend container
