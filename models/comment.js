@@ -7,6 +7,7 @@ const commentSchema = new Schema({
     
   // ObjectID attached automatically as _id
 
+  // Sender User Id
   user_id:{
     type: mongoose.ObjectId,
     required: true

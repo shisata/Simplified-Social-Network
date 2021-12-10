@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 
+// Post Object
+
 const PostSchema = new Schema({
 
   // ObjecID attribute is attached automatically as _id

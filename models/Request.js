@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-// Friend request Object
+// Friend request Object 
 
 const requestSchema = new Schema({
 

@@ -236,14 +236,14 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
 
 // FRIENDS PAGE
 
-// app.get('/friends', ensureAuthenticated, (req, res) => {
+app.get('/friends', ensureAuthenticated, (req, res) => {
 
-//   u = req.user;
+  u = req.user;
   
-//   User.find()
-//     .then(friends => res.render('friends.ejs', {friends, user:u }))
-//     .catch(err => res.status(404).json({ msg: 'No Friends found' }));
-// })
+  User.find()
+    .then(friends => res.render('friends.ejs', {friends, user:u }))
+    .catch(err => res.status(404).json({ msg: 'No Friends found' }));
+})
 
 
 // Get friends list
