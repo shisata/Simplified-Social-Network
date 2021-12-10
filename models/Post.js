@@ -29,13 +29,13 @@ const PostSchema = new Schema({
 
   // User IDs
   likes: {
-    type: Array,
+    type: [mongoose.ObjectId],
     default: []
   },
 
   // Comment IDs
   comments: {
-    type: Array,
+    type: [mongoose.ObjectId],
     default: []
   }
 

@@ -239,11 +239,10 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
 // app.get('/friends', ensureAuthenticated, (req, res) => {
 
 //   u = req.user;
-
-//   User.find({friends_list, includes()})
-//     .then(posts => res.render('profile_page.ejs', { posts, user:u }))
-//     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
-
+  
+//   User.find()
+//     .then(friends => res.render('friends.ejs', {friends, user:u }))
+//     .catch(err => res.status(404).json({ msg: 'No Friends found' }));
 // })
 
 

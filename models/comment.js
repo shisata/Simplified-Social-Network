@@ -8,7 +8,7 @@ const commentSchema = new Schema({
   // ObjectID attached automatically as _id
 
   user_id:{
-    type: Number,
+    type: mongoose.ObjectId,
     required: true
   },
   date:{

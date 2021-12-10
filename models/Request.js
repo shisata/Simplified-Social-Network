@@ -1,30 +1,25 @@
-//// File description: Schema for User in MongoDB
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
+// Friend request Object
+
 const requestSchema = new Schema({
 
     // Sending User
-    user1_id:{
-        type:String,
+    sender_id:{
+        type: mongoose.ObjectId,
         required: true
     },
 
     // Receiving User
-    user2_id:{
-        type:String,
-        required: true
-    },
-
-    // Set for sending User
-    user1_agree:{
-        type:Boolean,
+    receiver_id:{
+        type: mongoose.ObjectId,
         required: true
     },
 
     // Set for receiving User
-    user2_agree:{
+    receiver_agree:{
         type:Boolean,
         required: false
       }
