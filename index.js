@@ -16,7 +16,7 @@ const path = require('path');
 
 var bcrypt = require('bcryptjs'); // Encryption for password
 const passport = require('passport'); // Handles login ?
-const {ensureAuthenticated} = require('./models/auth.js') // Authentication for login ?
+const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for login ?
 const User = require('./models/User'); // Schema for User using mongoose
 const Post = require('./models/Post');
 // const Chat = require('./models/chat') // Handles chat logic
@@ -42,7 +42,7 @@ app.use(session({
 /////// <some description>
 app.use(passport.initialize());
 app.use(passport.session());
-require("./models/passport")(passport);
+require("./models/Passport")(passport);
 
 /////// <some description>
 app.use(flash());
@@ -54,12 +54,12 @@ next();
 })
 
 /////// Connect to MongoDB
-originalDBURL = 'mongodb://mongo:27017/docker-node' //connection to local container mongo through port 27017 
-chrisDBURL = 'mongodb+srv://user11:Shengjin1@cluster0.dxk2z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+// originalDBURL = 'mongodb://mongo:27017/docker-node' //connection to local container mongo through port 27017 
+// chrisDBURL = 'mongodb+srv://user11:Shengjin1@cluster0.dxk2z.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 joshDBURL = 'mongodb+srv://guest:guest@cluster0.fjr7b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 mongoose
-  .connect(
-    joshDBURL, 
+  .connect( 
+    joshDBURL,
     { useNewUrlParser: true,useUnifiedTopology: true}
   )
   .then(() => console.log('MongoDB Connected'))
@@ -110,7 +110,7 @@ app.get('/logout', (req, res)=>{
   res.redirect('/')
 })
 
-app.get('/chat',ensureAuthenticated, (req, res) => {
+app.get('/chat', ensureAuthenticated, (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
   user_data = { // dummy data 
     name : "Dummy_user"
@@ -208,6 +208,7 @@ app.post('/register', (req, res) => {
 
 
 
+// PROFILE
 
 // Get "My" profile when Auntheticated
 // Ensure only "My" posts are displayed
@@ -239,6 +240,30 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
   newPost.save().then(post => res.redirect('/profile'));
 
 });
+
+// Add a comment to a post
+
+
+// FRIENDS PAGE
+
+app.get('/friends', ensureAuthenticated, (req, res) => {
+
+  u = req.user;
+  
+  User.find()
+    .then(friends => res.render('friends.ejs', {friends, user:u }))
+    .catch(err => res.status(404).json({ msg: 'No Friends found' }));
+})
+
+
+// Get friends list
+
+// Create a friend Request record
+
+
+// Cancel a friend request sent by me
+
+
 
 
 

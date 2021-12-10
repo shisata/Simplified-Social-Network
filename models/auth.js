@@ -1,4 +1,5 @@
-//// File description: <some description>
+// Authentication
+
 module.exports ={
     ensureAuthenticated:function(req, res, next) {
         if(req.isAuthenticated()) {
