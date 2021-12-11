@@ -25,5 +25,4 @@ const requestSchema = new Schema({
       }
 
 })
-
 module.exports = mongoose.model('friend_request',requestSchema)

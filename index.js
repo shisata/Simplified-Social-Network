@@ -20,7 +20,8 @@ const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for 
 const User = require('./models/User'); // Schema for User using mongoose
 const Post = require('./models/Post');
 const Request = require('./models/Request'); // Friend Requests
-// const Chat = require('./models/chat') // Handles chat logic
+// const Chat = require('./models/chat') // Handles chat login
+
 
 var http = require('http');
 var socketIO = require('socket.io'); // For live connection when doing live chat
@@ -253,19 +254,50 @@ app.get('/friends', ensureAuthenticated, (req, res) => {
 
 
 // Make a friend request
-// Creates a Request object
 app.post('/friends/add', ensureAuthenticated, (req, res) => {
   
   u = req.user;
+  var requested_user_email = req.body.receiver_id;
 
+  console.log("Requested User's Email: ", requested_user_email)
+  // Translate the received email (req.body.receiver_id) into an ObjectID
+  try {
+    var requested_user_id = matchUser(requested_user_email, err);
+  } catch (err){
+    console.error("No User Found");
+  }
+  
+  // Create a new Request Object
+  // Fill processed information
   const friend_req = new Request({
     sender_id: u._id,
-    receiver_id: req.body.receiver_id,
+    receiver_id: requested_user_id,
     receiver_agree: req.body.receiver_agree
   })
 
-  friend_req.save().then(request => res.redirect('/friends'));
+  friend_req.save()
+    .then(request => res.redirect('/friends'))
+    .catch(err => res.status(404).json({ msg: 'No User found' }));
+
 })
+
+
+// Finds a User by Entered Email
+function matchUser(req_email, callback) {
+
+  User.find({email: req_email}, (err, queried_user) => {
+
+    console.log("I am inside the function, my parameters are: ", req_email, callback);
+
+    if(err){
+      callback(err, "User Not Found");
+    }
+    else{
+      callback(null, queried_user._id);
+    }
+  }).catch(err => res.status(404).json({ msg: 'No User found' }));
+
+}
 
 
 // Check for Incoming Friend Requests
@@ -273,6 +305,8 @@ app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
   u = req.user;
   
+  // Look up requests in my name
+  // Return 404 if nothing found
   Request.find({receiver_id : u._id})
     .then(requests => res.render('request_check.ejs',{requests, user:u }))
     .catch(err => res.status(404).json({ msg: 'No Requests Found' }));
@@ -282,8 +316,6 @@ app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 // Remove an existing friend
 // app.post('/friends/remove', ensureAuthenticated, (req, res) => {
 // })
-
-
 
 
 
