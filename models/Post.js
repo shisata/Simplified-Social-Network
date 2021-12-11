@@ -29,6 +29,12 @@ const PostSchema = new Schema({
     required: true
   },
 
+  // Owner's ID
+  owner: {
+    type: mongoose.ObjectId,
+    required: true
+  },
+
   // User IDs
   likes: {
     type: [mongoose.ObjectId],

@@ -29,7 +29,7 @@ const UserSchema = new Schema({
     default: false
   },
 
-  // Keeping a friend list by Object IDs
+  // // Keeping a friend list by Object IDs
   friends_list:{
     type: [mongoose.ObjectId],
     default:[]
@@ -52,6 +52,8 @@ const UserSchema = new Schema({
     type: [mongoose.ObjectId],
     default: []
   },
+
+
 
   // Setting Object ID for a current user
   // setting:{

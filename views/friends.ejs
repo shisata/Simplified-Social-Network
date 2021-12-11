@@ -35,8 +35,8 @@
     <!-- TODO: CHANGE TO A SEARCH & ADD INSTEAD -->
     <form action="/friends/add" method="POST">
         <fieldset>
-        <h3>Add by ObjectId</h3>
-        <label>Friend ObjectID</label>
+        <h3>Add by email</h3>
+        <label>Friend's Email Address</label>
         <input type ="receiver_id" id = 'receiver_id' name="receiver_id" required>
         
         <button type ="Submit" class="btn">Send Request</button>
@@ -47,27 +47,28 @@
     <!-- Check for Incoming Friend Requests -->
     <!-- Redirects to a different page -->
     <div>
-        <button class="btn" onclick="window.location.href='/friends/requests';">Check Incoming Requests</button>
+        <button class="btn" onclick="window.location.href='/friends/requests';">New Requests</button>
     </div>
     
     <div>
         <h1>My Friends</h1>
         <ul>
             
-            <!-- Lists emails of ALL USERS -->
-            <!-- TO-DO: ONLY SHOW USER's Friends -->
+            <!-- Lists Info of ALL Friends -->
             <!-- TO-DO: Add profile links -->
 
             <% users.forEach(function(user) { %>
                 <li>
-                    <%= user.email %>                  
+                    <%= user.fname %>
+                    <%= user.lname %>
+                    <%= user.email %>
                 </li>
 
                 <% }); %>
 
         </ul>
     </div>
-    
+
 </body>
 
 

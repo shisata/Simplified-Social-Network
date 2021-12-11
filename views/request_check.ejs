@@ -22,17 +22,22 @@
 <p class="error"><%=  error_msg %> </p>         
 <% } %>
 
-<!-- List Incoming Requests -->
+<!-- Lists Incoming Requests -->
 <!-- TODO: List incoming requests in a proper format -->
-<!-- TODO: Add actions -->
 <body>
 
     <% requests.forEach(function(user) { %>
         <li>
+            Sender
             <%= user.sender_id %>
+            Receiver
             <%= user.receiver_id %>                  
-            <%= user.receiver_agree %>                  
         </li>
+
+        <!-- TODO: Add Action buttons for for app.post(/friends/add/manage) -->
+    
+        <!-- ADD Response and Friend ID fields (USED in add/manage) -->
+
 
     <% }); %>
 
