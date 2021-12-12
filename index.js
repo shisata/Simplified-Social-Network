@@ -139,7 +139,7 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
     console.log("///////////////////////////////////////")
   
     // Pushing new message into log
-    // await foundMessageLog.messages.push(foundMessages)
+    // awabit foundMessageLog.messages.push(foundMessages)
     // await foundMessageLog.save(function(err, result){
     //   if(err){console.log(err)}
     //   else{
@@ -227,67 +227,6 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
     // }).catch((err) => {console.log(err)})
 
   } catch (err){console.log(err)}
-  // const doc = query.exec() // execute filter
-  // query = User.findById('61b2a0a386a6c0001b01379f')
-  //   .then((user) => {
-  //     try{
-  //       console.log(user)
-  //       console.log(typeof user)
-  //       message = new Message({
-  //         sender_id: user._id,
-  //         content: 'First message ever!!'
-  //       })
-  //       console.log("====Created message===")
-  //       console.log(message)
-  //       console.log("======================")
-  //       if(typeof user.messages == 'undefined'){
-  //         console.log('Array is undefined!!!')
-  //         user.messages.push(message);
-  //         user.save();
-  //         console.log("====Created first message===")
-  //         console.log(user)
-  //         console.log("==========Saving message============")
-  //         const savedMessage = await message.save();
-  //         console.log(savedMessage)
-  //         console.log("==========================")
-  //       }else{
-  //         console.log('Array not empty')
-  //       }
-  //       // user.messages.push(message)
-  //       // const savedUser = user.save();
-  //       // console.log("====Pushed message===")
-  //       // console.log(savedUser)
-  //       // console.log("==========Saving message============")
-  //       // const savedMessage = message.save();
-  //       // console.log("==========================")
-  //     } catch(err){
-  //       console.log(err)
-  //     }
-  //     //   .then((result) => {
-  //     //     console.log("---------------Saved-------------")
-  //     //     console.log(result)
-  //     //     console.log("----------------------------")
-  //     //   })
-  //     // await user.populate('messages')
-  //     // .exec(function(err, result){
-  //     //     .catch((err) => {
-  //     //       console.log(err)
-  //     //     })
-        
-  //     //   })
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //   });
-  // console.log(doc)
-  // console.log("///////////////////////////////////////")
-  // // console.log(doc.name)
-  // user_data = { // dummy data 
-  //   name : u.fname
-  // }
-  // res.render('chat',{user : user_data})
-  // var user_name = 'dummy'
-  // console.log('chat page')
 });
 
 ///// SocketIO listen to connection when client call io()
@@ -321,12 +260,19 @@ io.on('connection', function(socket) {
       await message.save()
       await message_log.save()
       
+      // Look for sender name
+      const u = await User.findById(message.sender_id);
+      const u_name = {
+        fname: u.fname,
+        lname: u.lname
+      }
+
       // notify both client1 and client2 that new message is coming
-      data = {
+      socket.emit('incoming-message', {
+        user_name: u_name,
         sender_id: message.sender_id,
         message: message.content
-      }
-      socket.emit('incoming-message', data)
+      })
       // io.to("some room").emit('incoming-message', data);
       console.log('replied back client about message')
 
