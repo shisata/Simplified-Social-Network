@@ -18,12 +18,14 @@ const requestSchema = new Schema({
         required: true
     },
 
-    // Set for receiving User
-    receiver_agree:{
-        type:Boolean,
-        required: false
-      }
+    // Request statuses
+    req_status: {
+        type: Number,
+        enums: [
+            1,    // Pending
+            2,    // Friends
+        ]
+    }
 
 })
-
 module.exports = mongoose.model('friend_request',requestSchema)

@@ -2,12 +2,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
 const UserSchema = new Schema({
 
   // ObjectID attribute is attached automatically as _id
   
-
   email:{
     type:String,
     required: true
@@ -31,7 +29,7 @@ const UserSchema = new Schema({
     default: false
   },
 
-  // Keeping a friend list by Object IDs
+  // // Keeping a friend list by Object IDs
   friends_list:{
     type: [mongoose.ObjectId],
     default:[]
@@ -55,11 +53,11 @@ const UserSchema = new Schema({
     default: []
   },
 
-  // Setting ObjectId for the current user
-  //setting:{
-  //  type: mongoose.ObjectId,
-  //  required: true
-  //}
+  // Setting Object ID for a current user
+  // setting:{
+  //   type: mongoose.ObjectId,
+  //   required: true
+  // }
 
 })
 module.exports = User = mongoose.model('user', UserSchema);
