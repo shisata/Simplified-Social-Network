@@ -219,7 +219,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 
   u = req.user;
 
-  Post.find({owner: u.email}).sort({date:-1})
+  Post.find({owner: u._id})
     .then(posts => res.render('profile_page.ejs', { posts, user:u }))
     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
 
@@ -230,17 +230,16 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 // Mark post with the Owner attribute (User's email address)
 
 app.post('/profile/post', ensureAuthenticated, (req, res) => {
-
   u = req.user;
-
+  console.log(req.body.Privacy)
   const newPost = new Post({
     Title: req.body.Title,
     Body: req.body.Body,
-    owner: u.email
+    owner: u._id,
+    privacy: req.body.Privacy
   })
 
   newPost.save().then(post => res.redirect('/profile'));
-
 });
 
 // Add a comment to a post

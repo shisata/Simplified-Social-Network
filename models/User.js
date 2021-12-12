@@ -56,10 +56,10 @@ const UserSchema = new Schema({
   },
 
   // Setting ObjectId for the current user
-  setting:{
-    type: mongoose.ObjectId,
-    required: true
-  }
+  //setting:{
+  //  type: mongoose.ObjectId,
+  //  required: true
+  //}
 
 })
 module.exports = User = mongoose.model('user', UserSchema);

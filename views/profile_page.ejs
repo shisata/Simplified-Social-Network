@@ -55,13 +55,18 @@
       
       <label>Attachment</label>
       <input type ="text" id = 'Img' name="Img">
-    
+      
+      <label for="Privacy">Privacy</label>
+      <select name="Privacy">
+        <option value="public" selected>everyone</option>
+        <option value="friends">my friends</option>
+        <option value="private">only me</option>
+      </select>
 
       <button type ="reset" class="btn">Reset</button>
       <button type ="submit" class="btn">Submit</button>
     </fieldset>
   </form>
-
 
   <h3>My Posts:</h3>
   <ul>
@@ -76,8 +81,6 @@
       </li>
       <% }); %>
   </ul>
-  
-
 
 </body>
 
