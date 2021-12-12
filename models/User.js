@@ -3,12 +3,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const MessageLog = require('./MessageLog')
 
-
 const UserSchema = new Schema({
 
   // ObjectID attribute is attached automatically as _id
   
-
   email:{
     type:String,
     required: true
@@ -32,7 +30,7 @@ const UserSchema = new Schema({
     default: false
   },
 
-  // Keeping a friend list by Object IDs
+  // // Keeping a friend list by Object IDs
   friends_list:{
     type: [mongoose.ObjectId],
     default:[]
