@@ -1,6 +1,7 @@
 //// File description: Schema for User in MongoDB
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const MessageLog = require('./MessageLog')
 
 
 const UserSchema = new Schema({
@@ -46,7 +47,6 @@ const UserSchema = new Schema({
   // Message logs for conversation with each user (each message_log has many message transactions)
   message_logs:{
     type: [mongoose.ObjectId],
-    default: []
   },
 
   // Stories IDs posted by this user
@@ -57,8 +57,7 @@ const UserSchema = new Schema({
 
   // Setting ObjectId for the current user
   setting:{
-    type: mongoose.ObjectId,
-    required: true
+    type: mongoose.ObjectId
   }
 
 })

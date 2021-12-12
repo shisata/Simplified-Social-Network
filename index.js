@@ -13,6 +13,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('connect-flash');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 var bcrypt = require('bcryptjs'); // Encryption for password
 const passport = require('passport'); // Handles login ?
@@ -54,6 +55,12 @@ app.use((req, res, next) => {
   res.locals.error = req.flash('error');
 next();
 })
+
+// Parse incoming request bodies in a middleware before handlers, available under the req.body property.
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extend: true
+}))
 
 /////// Connect to MongoDB
 // originalDBURL = 'mongodb://mongo:27017/docker-node' //connection to local container mongo through port 27017 
@@ -112,12 +119,168 @@ app.get('/logout', (req, res)=>{
   res.redirect('/')
 })
 
-app.get('/chat', ensureAuthenticated, (req, res) => {
+app.get('/chat', ensureAuthenticated, async (req, res)  => {
   //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
-  user_data = { // dummy data 
-    name : "Dummy_user"
-  }
-  res.render('chat',{user_data})
+  console.log("///////////////////Current User////////////////////")
+  user = req.user;
+  // console.log(user)
+  try{
+    console.log("///////////////////Found User////////////////////")
+    const foundUser = await User.findById(user._id)
+    const foundMessageLog = await MessageLog.findById(foundUser.message_logs[0])
+    const foundMessages = await Message.findById('61b58fc4f1dd72001239c97d')
+    await console.log(foundUser)
+    await console.log(foundMessageLog)
+    console.log("///////////////////////////////////////")
+  
+    // Pushing new message into log
+    // await foundMessageLog.messages.push(foundMessages)
+    // await foundMessageLog.save(function(err, result){
+    //   if(err){console.log(err)}
+    //   else{
+    //     console.log(result)
+    //   }
+    // })
+
+    // Find both users name to send to client
+    const u1 = await User.findById(foundMessageLog.user1_id);
+    const u1_name = {
+      fname: u1.fname,
+      lname: u1.lname
+    }
+
+    const u2 = await User.findById(foundMessageLog.user2_id);
+    const u2_name = {
+      fname: u2.fname,
+      lname: u2.lname
+    }
+    
+    const u_names = {
+      user1_name: u1_name,
+      user2_name: u2_name
+    }
+
+    // Create a list of messages to send to client
+    var messages = []
+    var msg_list = foundMessageLog.messages
+    for (var i = 0; i < msg_list.length; i++){
+      var found = await Message.findById(msg_list[i]);
+      var message = {
+        sender_id: found.sender_id,
+        content: found.content,
+        date: found.date.toString()
+      }
+      messages.push(message)
+    }
+
+    // await User
+    //  .find({_id: '61b29a093f00ea001a3e70c2'})
+    //  .populate('message_logs')
+    //  .exec(function(err, user){
+    //    if (err) {return handleError(err)}
+    //    console.log(user);
+    //   });
+
+
+    // // Checking if messages in MessagesLog are schemas 
+    // await MessageLog
+    //  .findOne({_id: foundUser.message_logs[0], content: 'First message ever!!'})//()
+    //  .populate('messages')
+    //  .exec(function(err, message_log){
+    //   if (err) {return handleError(err)}
+    //   console.log(message_log);
+    //  });
+
+    // Checking if message_logs in User are schemas
+    // await User
+    //  .findOne()
+    //  .populate()
+    //  .exec(function(err, user){
+    //   if (err) {return handleError(err)}
+    //   console.log(user);
+    //  });
+    
+
+    console.log("///////////////////////////////////////")
+
+
+    await res.render('chat', {
+      user : foundUser, 
+      user_names: u_names, 
+      message_log: foundMessageLog,
+      message_list: messages
+    })
+
+    // console.log("///////////////////After Push////////////////////")
+    // console.log(await MessageLog.findById(foundUser.message_logs[0]))
+
+
+    // MessageLog.findById('61b533f0323caf001474ea4f')
+    // .populate()
+    // .then((result) => {
+    //   console.log(result.messages)
+    // }).catch((err) => {console.log(err)})
+
+  } catch (err){console.log(err)}
+  // const doc = query.exec() // execute filter
+  // query = User.findById('61b2a0a386a6c0001b01379f')
+  //   .then((user) => {
+  //     try{
+  //       console.log(user)
+  //       console.log(typeof user)
+  //       message = new Message({
+  //         sender_id: user._id,
+  //         content: 'First message ever!!'
+  //       })
+  //       console.log("====Created message===")
+  //       console.log(message)
+  //       console.log("======================")
+  //       if(typeof user.messages == 'undefined'){
+  //         console.log('Array is undefined!!!')
+  //         user.messages.push(message);
+  //         user.save();
+  //         console.log("====Created first message===")
+  //         console.log(user)
+  //         console.log("==========Saving message============")
+  //         const savedMessage = await message.save();
+  //         console.log(savedMessage)
+  //         console.log("==========================")
+  //       }else{
+  //         console.log('Array not empty')
+  //       }
+  //       // user.messages.push(message)
+  //       // const savedUser = user.save();
+  //       // console.log("====Pushed message===")
+  //       // console.log(savedUser)
+  //       // console.log("==========Saving message============")
+  //       // const savedMessage = message.save();
+  //       // console.log("==========================")
+  //     } catch(err){
+  //       console.log(err)
+  //     }
+  //     //   .then((result) => {
+  //     //     console.log("---------------Saved-------------")
+  //     //     console.log(result)
+  //     //     console.log("----------------------------")
+  //     //   })
+  //     // await user.populate('messages')
+  //     // .exec(function(err, result){
+  //     //     .catch((err) => {
+  //     //       console.log(err)
+  //     //     })
+        
+  //     //   })
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //   });
+  // console.log(doc)
+  // console.log("///////////////////////////////////////")
+  // // console.log(doc.name)
+  // user_data = { // dummy data 
+  //   name : u.fname
+  // }
+  // res.render('chat',{user : user_data})
   // var user_name = 'dummy'
   // console.log('chat page')
 });
@@ -126,15 +289,48 @@ app.get('/chat', ensureAuthenticated, (req, res) => {
 io.on('connection', function(socket) { 
   // Emit welcome message to current user
   console.log("Detect connection from: ", socket.id);
+  // chat room will be in array
 
-  // Listen for message from 
-  // socket.on('message', handleMessage(message));
-  socket.on('message', function(data) {
+  // Listen to client1 request that they are chatting with client2 
+  // await process to complete
+    // check if client2 already in chat room with client1 (check DB)
+      // client1 joins client2 room
+    // create new chat room for client1 if client2 is not in chat room
+
+    
+  // Listen for message from user and push it to current message log user is using
+  // Then tell user to check for new update
+  socket.on('message', async function(data) {
+    console.log("receive message from user: ");
     console.log(data);
-    io.emit('incoming-message', data); 
+    try{
+      const message_log = await MessageLog.findById(data.message_log_id);
+      console.log(message_log)
+
+      // Create new Message and save to MessageLog
+      const message = new Message({
+        sender_id: data.sender_id,
+        content: data.message
+      });
+      await message_log.messages.push(message)
+      await message.save()
+      await message_log.save()
+      
+      // notify both client1 and client2 that new message is coming
+      data = {
+        sender_id: message.sender_id,
+        message: message.content
+      }
+      socket.emit('incoming-message', data)
+      // io.to("some room").emit('incoming-message', data);
+      console.log('replied back client about message')
+
+    } catch(err){console.log(err)}
+    
     // handleMessage(user_id, message);
   });
 
+  // TODO: Listen to client1 disconnect request, remove client1 from chat room (on DB)
   socket.on('disconnect', function(){
     console.log("Disconnection from: ", socket.id);
     // io.emit('message', handleMessage('', user_name + ' is offline!!')) // emits message to everyone
