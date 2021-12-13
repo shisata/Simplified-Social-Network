@@ -4,7 +4,7 @@ var bcrypt = require('bcryptjs');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
-const {ensureAuthenticated} = require('./auth.js')
+const {ensureAuthenticated} = require('./auth.js');
 
 const app = express();
 
@@ -70,7 +70,7 @@ app.post('/login', (req, res, next) => {
     failureFlash : true ,
   })(req, res,next);
 
-})
+});
 
 app.post('/register', (req, res) => {
   const {email,password,password2,fname,lname} = req.body;
@@ -129,6 +129,7 @@ app.post('/register', (req, res) => {
   
 });
 
+
 app.get('/logout', (req, res)=>{
   u = req.user;
   u.active = false;
@@ -137,6 +138,25 @@ app.get('/logout', (req, res)=>{
   req.flash('success_msg','You have now logged out!');
   res.redirect('/')
 })
+require('./gg.js');
+app.get('/auth/google', (req, res, next) => {
+  passport.authenticate('google',{
+    scope:[
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email',
+    ]
+  })(req, res, next);
+});
+
+app.get('/auth/google/callback', (req, res, next) => {
+  passport.authenticate('google',{
+    successRedirect:'/admin',
+    failureRedirect:'/login',
+    failureFlash:true
+  })(req, res, next);
+});
+
+
 
 const port = 3000;
 
