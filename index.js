@@ -147,12 +147,13 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
   var user = req.user;
   const user_id = user._id.toString()
   const other_id = req.params.id.toString();
+  var message_log_id; // message_log between 2 users
 
   console.log(user)
   console.log("other_id: " + other_id)
 
   // Check if message_log is already established with the user that we are chatting with
-  console.log("///////////////////Check Message_log////////////////////")
+  // console.log("///////////////////Check Message_log////////////////////")
   try{
     var message_log_exists = false;
     // Loop through all message_log id to look for the one with both users
@@ -163,8 +164,10 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
 
       if(user1_id == user_id && user2_id == other_id){
         message_log_exists = true;
+        message_log_id = message_log._id;
       }else if(user2_id == user._id && user1_id == other_id){
         message_log_exists = true;
+        message_log_id = message_log._id;
       }
       console.log("Message_log: ", message_log)
     }
@@ -187,22 +190,23 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
       await user1.save();
       await user2.save();
       await message_log.save();
+      message_log_id = message_log._id;
 
-      console.log(console.log("////////////////////Created message log///////////////////"))
-      console.log(user1)
-      console.log(user2)
-      console.log(message_log)
-      console.log(console.log("////////////////////C///////////////////"))
+      // console.log(console.log("////////////////////Created message log///////////////////"))
+      // console.log(user1)
+      // console.log(user2)
+      // console.log(message_log)
+      // console.log(console.log("////////////////////C///////////////////"))
     }   
   } catch (err){console.log(err)}
-  console.log("///////////////////////////////////////")
+  // console.log("///////////////////////////////////////")
     
   // Load all existing messages and render the page 
   try{
     // console.log("///////////////////Found User////////////////////")
     const foundUser = await User.findById(user._id)
-    const foundMessageLog = await MessageLog.findById(foundUser.message_logs[0])
-    const foundMessages = await Message.findById('61b58fc4f1dd72001239c97d')
+    const foundMessageLog = await MessageLog.findById(message_log_id)
+    // const foundMessages = await Message.findById('61b58fc4f1dd72001239c97d')
     // await console.log(foundUser)
     // await console.log(foundMessageLog)
     // console.log("///////////////////////////////////////")
