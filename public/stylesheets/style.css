@@ -40,7 +40,7 @@ div {
   padding: 20px;
 }
 
-.message_box:hover {
+.message_box:hover, .friend_display:hover {
   background-color: lightgray;
 }
 

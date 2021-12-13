@@ -80,7 +80,6 @@ mongoose
   .catch(err => console.log(err));
 
 
-
 /////// Access URL controller
 app.get('/', (req, res) =>{
   res.render('index', {});
@@ -130,7 +129,7 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
   res.render('chat_selection', {user: u});
 });
 
-app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
+app.get('/chatroom', ensureAuthenticated, async (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
   console.log("///////////////////Current User////////////////////")
   user = req.user;
