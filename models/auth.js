@@ -1,4 +1,4 @@
-// Authentication
+// Authentication function
 
 module.exports ={
     ensureAuthenticated:function(req, res, next) {
