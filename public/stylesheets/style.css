@@ -1,3 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+
+*{
+  /* box-sizing: border-box;
+  /* width: 100%; */
+  /* padding: 0;
+  margin: 0; */ 
+  background-color: #e4e4e4;
+  /* border: solid black 10px; */
+}
+
+/***************Menu Buttons***************/
+
+.navigation-header{
+  /* background-color: rgb(26, 27, 29); */
+  box-sizing: border-box;
+  /* width: 100%; */
+  padding: 0;
+  margin: 0;
+}
+
+.navigation-ul li, .navigation-ul a, .logout-button{
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 16px;
+  /* background-color: rgb(26, 27, 29); */
+  /* font-style: #f2ebe9; */
+  text-decoration: none;
+}
+
+.navigation-button{
+  font-style: #f2ebe9;
+  text-decoration: none;
+}
+
+.filler{
+  display: none;
+}
+
+.navigation-bar{
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  padding-right: 60px;
+  padding-left: 60px;
+  padding-bottom: 3px;
+}
+
+.navigation-ul{
+  list-style: none;
+}
+
+.navigation-ul li, .logout-button{
+  display: inline-block;
+  color: rgb(24, 25, 26);
+  padding: 10px 20px;
+}
+
+.navigation-ul li a{
+  transition: all 0.15s ease 0s;
+}
+
+.navigation-ul li a:hover, .logout-button:hover{
+  /* background-color:#e2b786; */
+  padding: 10px 25px;
+  background-color:#51d1e7;
+  border: none;
+  border-radius: 20%;
+}
+
+/******************************/
+
 .btn {
     padding: 10px;
     margin: 0 auto;
@@ -34,23 +106,30 @@ input[type=submit]:hover ,button:hover {
   background-color: #45a049;
 }
 
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
+/***************Chat Box***************/
 
+ div {
+  border-radius: 5px;
+  /* background-color: #f2f2f2; */
+  padding: 20px;
+} 
+
+
+.message_box.their_message{
+  background-color: grey;
+  margin-right: auto;
+}
+.message_box.my_message{
+  background-color: rgb(157, 221, 243);
+  margin-right: auto;
+}
 .message_box:hover, .friend_display:hover {
   background-color: lightgray;
 }
+/******************************/
 
-.message_box .their_message{
-  background-color: grey;
-}
-.message_box .my_message{
-  background-color: lightblue;
-}
 
+/**************Error Page****************/
 .notice_board{
   background-color: grey;
   align-self: center;
@@ -59,3 +138,5 @@ div {
 .url{
   color: aqua;
 }
+
+/******************************/

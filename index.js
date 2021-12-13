@@ -392,6 +392,8 @@ io.on('connection', function(socket) {
     // handleMessage(user_id, message);
   });
 
+  // TODO: check if user is active and tell the friends
+
   // TODO: Listen to client1 disconnect request, remove client1 from chat room (on DB)
   socket.on('disconnect', function(){
     console.log("Disconnection from: ", socket.id);
