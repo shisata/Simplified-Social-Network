@@ -1,5 +1,5 @@
 <!-- Main page after logged in -->
-<%- include('header') %>
+<%- include('./partials/header') %>
 
 <h2> Welcome <%= user.fname %></h2>
 <p>Email : <%= user.email %></p>
@@ -7,8 +7,23 @@
 <p>Last Name : <%= user.lname %> </p>
 <p>Registe Time:<%= user.date %> </p>
 
-<%- include('menu_buttons') %>
+<%- include('./partials/menu_buttons') %>
 <body>
+    <div>
+        <h1>My Feed:</h1>
+        <ul>
+            <% posts.forEach(function(post) { %>
+            <li>
+                <div>
+                <header><%= post.owner %></header>
+                <h4><%= post.Title %></h4>
+                <p><%= post.Body %></p>
+                <p><%= post.date %></p>
+                </div>
+            </li>
+            <% }); %>
+        </ul>
+    </div>
     <div>
         <h1>All users</h1>
         <ul>

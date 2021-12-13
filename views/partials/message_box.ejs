@@ -1,0 +1,41 @@
+<% //const message_list = message_log.messages %>
+<% console.log(user) %> 
+<% console.log(user_names) %> 
+<% console.log(message_log) %> 
+<% console.log(message_list) %> 
+<% const my_id = user._id %> 
+<!-- Check which user_name belong to who -->
+<% var my_name, their_name; %> 
+<% if(my_id === message_log.user1_id){ %> 
+    <% my_name = user_names.user1_name; %> 
+    <% their_name = user_names.user2_name; %> 
+<% }else{ %> 
+    <% my_name = user_names.user2_name; %> 
+    <% their_name = user_names.user1_name; %> 
+<% } %> 
+
+<!-- When user first turn on chat window, the page will display all existing messages -->
+<% message_list.forEach(function(message) { %>
+    <!-- check for message owner -->
+    <% if(my_id === message.sender_id) { %> 
+    <div class="message_box my_message">
+        <div class="message_sender_name">
+            <%= "Name: " + my_name.fname + my_name.lname %> 
+        </div>
+        <div class="message_content">
+            <!-- TODO: display real message -->
+            <%= message.content %>
+        </div>
+    </div>
+    <% }else{ %> 
+    <div class="message_box their_message">
+        <div class="message_sender_name">
+            <%= "Name: " + their_name.fname + their_name.lname %> 
+        </div>
+        <div class="message_content">
+            <!-- TODO: display real message -->
+            <%= message.content %>
+        </div>
+    </div>
+    <% } %> 
+<% }) %>  

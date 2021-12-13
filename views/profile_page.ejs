@@ -39,8 +39,7 @@
   <h1>My Profile</h1>
 
   <h2> Welcome <%= user.email %>!</h2>
-
-  <%- include('menu_buttons') %>
+  <%- include('./partials/menu_buttons') %>
   <div>
 
   <form action="/profile/post" method="POST">
@@ -73,13 +72,16 @@
   </form>
 
 
-  <h4>My Posts:</h4>
+  <h3>My Posts:</h3>
   <ul>
     <% posts.forEach(function(post) { %>
       <li>
-        <%= post.Title %>
-        <%= post.Body %>
-        <%= post.date %>
+        <div>
+          <header><%= user.fname %> <%= user.lname %></header>
+          <h4><%= post.Title %></h4>
+          <p><%= post.Body %></p>
+          <p><%= post.date %></p>
+        </div>
       </li>
       <% }); %>
   </ul>
