@@ -45,9 +45,9 @@
 
     <!-- Check for Incoming Friend Requests -->
     <!-- Redirects to a different page -->
-    <!-- <div>
+    <div>
         <button class="btn" onclick="window.location.href='/friends/requests';">New Requests</button>
-    </div> -->
+    </div>
     
     <div>
         <h1>My Friends</h1>
@@ -61,6 +61,14 @@
                     <%= user.lname %>
                     <%= user.email %>
                 </li>
+
+                <form action="/friends/remove" method="POST">
+
+                    <input type="hidden" name="friend_id" value="<%= user.email%>">
+                    <input type="submit" name="response" value=Remove />
+    
+                </form>
+            
 
                 <% }); %>
 

@@ -27,6 +27,9 @@
     <div>
         <h1>All users</h1>
         <ul>
+
+            <% logged_in_usr = user._id %>
+
             <% users.forEach(function(user) { %>
                 <li>
                     <%= user.email %>
@@ -35,7 +38,21 @@
                         <% } else { %>
                             offline
                             <% } %>
-                    <%= user.email %>
+
+
+                    <% if((logged_in_usr in user.friends_list) === false) { %>
+                    
+                        <form action="/friends/add/" method="POST">
+
+                            <input type="hidden" name="receiver_id" value="<%= user.email%>">
+                            <input type="submit" name="response" value=Add />
+            
+                        </form>
+
+                    <% } %>
+        
+                    
+
                 </li>
                 <% }); %>
         </ul>

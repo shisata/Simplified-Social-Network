@@ -431,7 +431,6 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 
 
 // Submit a Post to "My" profile when Authenticated
-// TO-DO: Set Post privacy
 
 app.post('/profile/post', ensureAuthenticated, (req, res) => {
 
@@ -457,14 +456,13 @@ app.get('/friends', ensureAuthenticated, (req, res) => {
   u = req.user;
   u_id = u._id
   
-  // TO-DO: Display Users That contain My ID in their friend's list
-
+  // Display Users That contain My ID in their friend's list
   User.find({"friends_list": u_id})
       .then(users => res.render('friends.ejs',{ users, user:u }))
 
 })
 
-// Add a friend (NO REQUEST)
+// Add a friend
 app.post('/friends/add', ensureAuthenticated, async (req, res) => {
   
   u = req.user;
@@ -472,101 +470,114 @@ app.post('/friends/add', ensureAuthenticated, async (req, res) => {
 
   // Find a Requested User's ID by Email:
 
-  const friend_lookup = await User.findOne(
-    { "email": requested_user_email}
-  )
+  const friend_lookup = await User.findOne({"email": requested_user_email});
 
-  // console.log("Requested User's Email: ", requested_user_email);
-  // console.log("Requested User's ObjectID: ", friend_lookup._id);
+  console.log("Requested User's Email: ", requested_user_email);
+  console.log("Requested User's ObjectID: ", friend_lookup._id);
 
-  // // Create a new Request Object
-  // // Fill processed information
-  // const friend_req = new Request({
-  //   sender_id: u._id,
-  //   receiver_id: friend_lookup._id,
-  //   req_status: 1 // Status: Request PENDING
-  // })
+  // Create a new Request Object
+  // Fill processed information
+  const friend_req = new Request({
+    sender_id: u._id,
+    receiver_id: friend_lookup._id,
+    req_status: 1 // Status: Request PENDING
+  })
 
-  const user1 = await User.findById(u._id);
-  const user2 = await User.findById(friend_lookup._id);
+  console.log("Friend Request Sent by Me to: ", friend_lookup.fname, " " ,friend_lookup.lname, " with ID: ", friend_lookup._id);
 
-  await user1.friends_list.push(friend_lookup._id);
-  await user2.friends_list.push(u._id);
-
-  console.log(user1);
-  console.log(user2);
-
-
-  console.log("Friend Request Sent to: ", friend_lookup.fname, " " ,friend_lookup.lname, " with ID: ", friend_lookup._id);
-
-  await user1.save();
-  await user2.save().then(request => res.redirect('/friends'))
-    .catch(err => res.status(404).json({ msg: 'No User found' }));
+  // Request is not sent if User Does not exist
+  await friend_req.save().then(request => res.redirect('/friends'))
+    .catch(err => res.redirect('/friends'));
+    // .catch(err => res.status(404).json({ msg: 'No User found' }));
 
 })
 
 
-// Accept Incoming request (UNUSED)
-// app.post('/friends/add/accept', ensureAuthenticated, async (req, res) => {
+// Removes a friend selected in the menu.
+app.post('/friends/remove', ensureAuthenticated, async (req, res) => {
 
-//   // Incoming request has sender_id, receiver_id, status
-//   // Find the Existing Request and Update status with Response
-//   // Update Both user's friendships based on response
+  u = req.user;
+  friend_id = req.body.friend_id;
 
-//   u = req.user;
+  // Look up the Requested Friend ID
+  const friend_lookup = await User.findOne({"email": friend_id});
 
-//   console.log("Query variabless:", req.query);
+  // Find both User objects
+  const user1 = await User.findById(u._id);
+  const user2 = await User.findById(friend_lookup._id);
 
-//   const request = await Request.findOne({receiver_id: u._id, sender_id: friend_id})
-//   .exec(async function(err, request){
-//     if(err){return handleError(err)}
-//     try{
-//       const user1 = await User.findById(u._id);
-//       const user2 = await User.findById(friend_id);
+  await user1.friends_list.pull(friend_lookup._id);
+  await user2.friends_list.pull(u._id);
 
-//       console.log(request);
-//       console.log(user1);
-//       console.log(user2);
+  await user1.save()
+  await user2.save()
 
-//       if(u._id !== friend_id){
+  res.redirect('/friends');
+})
 
-//         await request.updateOne({ $set: {req_status: 2} });
-//         await user1.friends_list.push(req.body.friend_id );
-//         await user2.friends_list.push(u._id);
 
-//         await user1.save()
-//         await user2.save()
+// Accept Incoming request
+app.post('/friends/add/accept', ensureAuthenticated, async (req, res) => {
+
+  // Incoming request has sender_id, receiver_id, status
+  // Finds the Existing Request and Update status
+  // Updates Both user's friendships based on response
+
+  u = req.user;
+  friend_id = req.body.friend_id;
+
+
+  // Finds an Incoming Request with Status = 1 (PENDING)
+  const request = await Request.find({receiver_id: u._id, sender_id: friend_id, status: 1})
+  .exec(async function(err, request){
+    if(err){return handleError(err)}
+    try{
+
+      // Find both User objects
+      const user1 = await User.findById(u._id);
+      const user2 = await User.findById(friend_id);
+
+      console.log(request);
+      console.log(user1);
+      console.log(user2);
+
+      // Make sure adding a different user, not myself
+      if(u._id !== friend_id){
+
+        // Update the Request Object to 2 (FRIENDS)
+        // await request.updateMany({ $set: {req_status: 2} });
+
+        await request.forEach( function (element) {
+          element.remove();
+        });
+
+        // Update the friend lists on acceptance
+        await user1.friends_list.push(req.body.friend_id );
+        await user2.friends_list.push(u._id);
+
+        await user1.save()
+        await user2.save()
   
-//         res.status(400)
-//       }
-//       else 
-//       {
-//         res.status(400)
-//       }
-//     }catch(err){console.log(err)}
-//   })
+        res.redirect('/friends')
+      }
+      else 
+      {
+        res.redirect('/friends')
+      }
+    }catch(err){console.log(err)}
+  })
 
-//   // If Declined
-//   // Set Status to 2 and update the Friendships for BOTH users
-
-//   // Satisfy the request
-//   // Update Request Object' Status
-    
-
-// })
+  
+})
 
 
 
 // Check for Incoming Friend Requests
-// UNUSED
 app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
   u = req.user;
   
-  User.find({"friend_reqs." : u._id})
-
   // Looks up PENDING (1) requests sent in my name
-  // Return 404 if nothing found
   Request.find({receiver_id : u._id, req_status: 1})
     .then(requests => res.render('request_check.ejs',{requests, user:u }))
     .catch(err => res.status(404).json({ msg: 'No Requests Found' }));
