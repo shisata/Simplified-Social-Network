@@ -22,14 +22,16 @@ const passport = require('passport'); // Handles login ?
 const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for login ?
 const User = require('./models/User'); // Schema for User using mongoose
 const Post = require('./models/Post');
+const Comment = require('./models/Comment');
+
 // const Chat = require('./models/chat') // Handles chat logic
 const MessageLog = require('./models/MessageLog');
 const Message = require('./models/Message');
+
 const Request = require('./models/Request'); // Friend Requests
 // const Chat = require('./models/chat') // Handles chat login
 
 mongoose.set('debug', true);
-
 
 var http = require('http');
 var socketIO = require('socket.io'); // For live connection when doing live chat
@@ -94,22 +96,39 @@ app.get('/register', (req, res) => {
 
 app.get('/admin',ensureAuthenticated,(req, res) => {
   u = req.user;
-  console.log(u);
+
   u.active = true;
   u.save();
 
-  //let parameters = new Object();
-  //parameters["user"] = u;
-
-  Post.find().sort({date:-1}).then(posts=>{
-    User.find().then(users=>{
-      res.render('admin',{posts:posts,users:users,user:u})
+  //find all visible posts that are public, from friends, or yourself
+  Post.find({$or: [{privacy:"public"},{privacy:"friends",owner:{$in:u.friends_list}},{privacy:{$in:["private","friends"]},owner:u._id}]}).sort({date:-1}).then(posts=>{
+    Comment.find().sort({date:-1}).then(comments=>{
+      let comment_map = {};
+      comments.forEach(comment => {comment_map[comment._id]=comment});
+      //console.log(comment_dict);
+      User.find().then(users=>{
+        let user_map = {};
+        users.forEach(user => {user_map[user._id]=user});
+        res.render('admin',{posts:posts,users:user_map,user:u,comments:comment_map})
+      });
     });
   });
-
-    //.then(users => parameters[]=user)
-
   
+  //.then(users => parameters[]=user)
+});
+
+app.post('/admin/comment',(req, res)=>{
+  u = req.user;
+  Post.findOne({_id:req.body.post_id}).then(p=>{
+    const newComment = new Comment({
+      user_id: u._id,
+      content: req.body.Content,
+    });
+    p.comments.push(newComment._id);
+    console.log("comment user_id:",newComment.user_id);
+    newComment.save();
+    p.save().then(post => res.redirect('/admin'));
+  }); //parent post of the comment
 });
 
 
@@ -124,7 +143,7 @@ app.get('/logout', (req, res)=>{
   req.logout();
   req.flash('success_msg','You have now logged out!');
   res.redirect('/')
-})
+});
 
 app.get('/chat', ensureAuthenticated, async (req, res)  => {
   u = req.user;
@@ -490,9 +509,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 // TO-DO: Set Post privacy
 
 app.post('/profile/post', ensureAuthenticated, (req, res) => {
-
   u = req.user;
-
   const newPost = new Post({
     Title: req.body.Title,
     Body: req.body.Body,
@@ -501,7 +518,6 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
   })
 
   newPost.save().then(post => res.redirect('/profile'));
-
 });
 
 
