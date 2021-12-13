@@ -1,3 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+
+/***************General settings***************/
+:root{
+  --highlight_color: #50d0e7;
+  --highlight_color_light: #e3f6fa;
+  --left_border_highlight_width: 10px;
+
+  --title_size: 32px;
+  --statement_size: 20px;
+  --word_size: 14px;
+}
+*{
+  /* box-sizing: border-box;
+  /* width: 100%; */
+  /* padding: 0;
+  margin: 0; */ 
+  background-color: #e4e4e4;
+  font-size: var(--word_size);
+  font-family: monospace;
+
+  /* Align everything in the middle */
+  /* margin:auto;
+  width: 100%; */
+  /* border: solid black 10px; */
+}
+
+h1{
+  font-size: var(--title_size);
+}
+
+/******************************/
+
+/***************Menu Buttons***************/
+
+
+.navigation-header{
+  /* background-color: rgb(26, 27, 29); */
+  box-sizing: border-box;
+  /* width: 100%; */
+  padding: 0;
+  margin: 0;
+}
+
+.navigation-ul li, .navigation-ul li a, .logout-button{
+  font-family: monospace;
+  font-weight: bold;
+  font-size: var(--statement_size);
+  /* background-color: rgb(26, 27, 29); */
+  /* font-style: #f2ebe9; */
+  text-decoration: none;
+}
+
+.navigation-button{
+  font-style: #f2ebe9;
+  text-decoration: none;
+}
+
+.filler{
+  display: none;
+}
+
+.navigation-bar{
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  padding-right: 60px;
+  padding-left: 60px;
+  padding-bottom: 3px;
+}
+
+.navigation-ul{
+  list-style: none;
+}
+
+.navigation-ul li, .logout-button{
+  display: inline-block;
+  color: rgb(24, 25, 26);
+  padding: 10px 20px;
+}
+
+.navigation-ul li a{
+  transition: all 0.15s ease 0s;
+}
+
+.navigation-ul li a:hover, .logout-button:hover{
+  /* background-color:#e2b786; */
+  padding: 10px 25px;
+  background-color:var(--highlight_color);
+  border: none;
+  border-radius: 20%;
+}
+
+/******************************/
+
+/***************Sidebar chat***************/
+
+.sidebar_chat{
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  /* background-color:rgb(24, 25, 26); */
+  overflow: hidden;
+  padding: 30px;
+  overflow-y: scroll;
+  
+}
+
+.title_container{
+  background-color: var(--highlight_color);
+  /* justify-content: center; */
+  align-self: center;
+}
+
+.title{
+  font-family: monospace;
+  font-weight: bold;
+  font-size: var(--statement_size);
+}
+
+.sidebar_friend_display{
+  width: 200px;
+  height: 50px;
+  overflow: hidden;
+}
+
+
+.sidebar_friend_name{
+  /* padding: 5px 5px 5px 5px; */
+  text-decoration: none;
+  font-family: monospace;
+  overflow:hidden;
+  /* width: 150px; */
+  display: block;
+  padding: 12px 12px 15px 15px;
+}
+
+.sidebar_friend_display:hover{
+  cursor: pointer;
+  /* background-color:#e3f6fa; */
+}
+
+.sidebar_friend_name:hover{
+  /* color:#51d1e7; */
+  background-color:var(--highlight_color_light);
+  border-radius: 10%;
+}
+
+/******************************/
+
 .btn {
     padding: 10px;
     margin: 0 auto;
@@ -34,19 +186,61 @@ input[type=submit]:hover ,button:hover {
   background-color: #45a049;
 }
 
-div {
+/***************Chat Box***************/
+
+.friend_display{
+  width: 200px;
+  height: 90px;
+  border-left: var(--highlight_color_light) var(--left_border_highlight_width);
+  padding-left: 40px;
+  /* padding: 20px; */
+  /* border-radius: 10px; */
+}
+
+.friend_display:hover{
+  cursor: pointer;
+  border-left: var(--highlight_color) var(--left_border_highlight_width);
+  /* border-right-width: var(--left_border_highlight_width); */
+}
+
+.friend_display div:hover{
+  cursor: pointer;
+  background-color: var(--highlight_color);
+}
+
+.friend_name{
+  font-weight: bold;
+}
+
+ /* div {
   border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
+  /* background-color commented out: #f2f2f2; */
+  /* padding: 20px;
+}  */ */
 
-.message_box:hover {
-  background-color: lightgray;
-}
 
-.message_box .their_message{
+/* .message_box.their_message{
   background-color: grey;
+  margin-right: auto;
 }
-.message_box .my_message{
-  background-color: lightblue;
+.message_box.my_message{
+  background-color: rgb(157, 221, 243);
+  margin-right: auto;
 }
+.message_box:hover, .friend_display:hover {
+  background-color: lightgray;
+} */
+/******************************/
+
+
+/**************Error Page****************/
+.notice_board{
+  background-color: grey;
+  align-self: center;
+}
+
+.url{
+  color: aqua;
+}
+
+/******************************/

@@ -33,13 +33,11 @@ const UserSchema = new Schema({
   // // Keeping a friend list by Object IDs
   friends_list:{
     type: [mongoose.ObjectId],
-    default:[]
   },
 
   // Post IDs belonging to a user
   posts:{
     type: [mongoose.ObjectId],
-    default: []
   },
 
   // Message logs for conversation with each user (each message_log has many message transactions)
@@ -50,13 +48,18 @@ const UserSchema = new Schema({
   // Stories IDs posted by this user
   stories:{
     type: [mongoose.ObjectId],
-    default: []
+  },
+
+  // Chat rooms that user is currently in (each chat room is an id of the friend user is chatting with)
+  chat_rooms:{
+    type: [{type: Schema.Types.ObjectId, ref: 'chatroom'}],
   },
 
   // Setting ObjectId for the current user
   setting:{
     type: mongoose.ObjectId
-  }
+  },
+
 
 })
 
