@@ -1,0 +1,78 @@
+<!-- Select the user to chat with -->
+<%- include('./partials/header') %>
+<script src="/socket.io/socket.io.js"></script>
+
+<h1> Chat </h1>
+<%- include('./partials/menu_buttons') %>
+<!-- Check if received user data and message_log from server -->
+
+<div class="menu_statement">Who do you want to chat?</div>
+
+<% user.friends_list.forEach((friend) => { %>
+    <div class="friend_display" style= "cursor: pointer;" onclick= "window.location='http://google.com';">
+        <% friend._id %> 
+    </div>
+<% }); %> 
+
+<script>
+
+    // Send message from text box
+    function sendMessage(){
+        var message_value = document.getElementById('message_content').value;
+        // console.log("message value: " + message);
+        if(message_value != ''){
+            var data = {
+                message_log_id: log_id,
+                sender_id: my_id,
+                message: message_value
+            };
+            socket.emit('message', data);
+            // Clean up input
+            message_content.value = '';
+        }
+    }
+     
+    // Listen to incoming message and display it
+    socket.on('incoming-message', function(data){
+        console.log("recieved message from server: ")
+        console.log(data)
+        var user_name = data.user_name;
+        var sender_id = data.sender_id;
+        var message = data.message;
+     
+        // Setting up elements
+        var message_box = document.createElement("div");
+        var message_sender_name = document.createElement("div");
+        var message_content = document.createElement("div");
+        
+        //Check for message ownner
+        if(sender_id == my_id){
+            message_box.setAttribute('class', 'message_box my_message'); 
+        }else if(sender_id == their_id){
+            message_box.setAttribute('class', 'message_box their_message');
+        }else{
+            message_box.setAttribute('class', "message_box error");
+            console.log()
+        }
+             
+        message_sender_name.setAttribute('class', 'message_sender_name');
+        message_sender_name.innerText = "Name: " + user_name.fname + user_name.lname; 
+
+        message_content.setAttribute('class', 'message_content');
+        message_content.innerText = message;
+                 
+        // Appending elements 
+        message_box.appendChild(message_sender_name);
+        message_box.appendChild(message_content);
+        display.appendChild(message_box);
+    })
+ 
+     var message_content = document.getElementById("message_content");
+     message_content.addEventListener('keyup', function (event) {
+         if (event.key === 'Enter' || event.keyCode === 13) {
+             sendMessage();
+             message_content.value = '';
+         }
+     });
+
+</script>

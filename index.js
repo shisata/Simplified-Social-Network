@@ -125,6 +125,12 @@ app.get('/logout', (req, res)=>{
 })
 
 app.get('/chat', ensureAuthenticated, async (req, res)  => {
+  u = req.user;
+  console.log(u)
+  res.render('chat_selection', {user: u});
+});
+
+app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
   console.log("///////////////////Current User////////////////////")
   user = req.user;
@@ -227,7 +233,7 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
     // }).catch((err) => {console.log(err)})
 
   } catch (err){console.log(err)}
-});
+})
 
 ///// SocketIO listen to connection when client call io()
 io.on('connection', function(socket) { 
