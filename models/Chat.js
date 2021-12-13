@@ -1,5 +1,5 @@
 //// File description: handles chat logic for backend
-/// UNUSED
+/// File unused for now!!!!
 
 // var socketIO = require('socket.io');
 // const socket = io();

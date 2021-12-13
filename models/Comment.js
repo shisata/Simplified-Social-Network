@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Comment Represntation Schema
-// Used for Posts
 
 const commentSchema = new Schema({
     
