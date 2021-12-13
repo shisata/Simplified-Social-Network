@@ -50,3 +50,12 @@ div {
 .message_box .my_message{
   background-color: lightblue;
 }
+
+.notice_board{
+  background-color: grey;
+  align-self: center;
+}
+
+.url{
+  color: aqua;
+}

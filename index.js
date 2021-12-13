@@ -630,7 +630,12 @@ app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
 
 
+// Page in case user access wrong url
+app.use((req, res) => {
 
+  res.render('wrong_url', {wrong_url: req.url});
+
+})
 const PORT = 3000; //Port of backend container
 
 server.listen(PORT, () => console.log('Server running...'));
