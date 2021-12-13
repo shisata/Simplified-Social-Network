@@ -1,0 +1,13 @@
+<!-- Sidebar that shows friends to chat -->
+
+<%- include('./partials/menu_buttons') %>
+<!-- Check if received user data and message_log from server -->
+<div class="sidebar_chat">
+    <% friends_list.forEach((friend) => { %>
+        <a class="friend_display" href="/chat/<%= friend._id %>">
+            <div class="friend_name"> <%= friend.fname %> </div>
+            <div class="friend_email"> <%= friend.email %> </div>
+            <!-- TODO: display last message, check for sender name, date sent -->
+        </a>
+    <% }); %> 
+</div>

@@ -1,0 +1,16 @@
+<!-- Select the user to chat with -->
+<%- include('./partials/header') %>
+
+<h1> Chat </h1>
+<%- include('./partials/menu_buttons') %>
+<!-- Check if received user data and message_log from server -->
+
+<div class="menu_statement">Who do you want to chat?</div>
+
+<% friends_list.forEach((friend) => { %>
+    <a class="friend_display" href="/chat/<%= friend._id %>">
+        <div class="friend_name"> <%= friend.fname %> </div>
+        <div class="friend_email"> <%= friend.email %> </div>
+        <!-- TODO: display last message, check for sender name, date sent -->
+    </a>
+<% }); %> 

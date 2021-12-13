@@ -1,0 +1,62 @@
+<% //const message_list = message_log.messages %>
+<% console.log(user) %> 
+<% console.log(user_names) %> 
+<% console.log(message_log) %> 
+<% console.log(message_list) %> 
+<% const my_id = user._id %> 
+<% var their_id %>
+
+<!-- Check which user_name belong to who -->
+<% var my_name, their_name; %> 
+<% if(my_id.toString() == message_log.user1_id.toString()){ %> 
+    <% my_name = user_names.user1_name; %> 
+    <% their_name = user_names.user2_name; %> 
+    <% their_id = message_log.user2_id; %> 
+<% }else if(my_id.toString() == message_log.user2_id.toString()){ %> 
+    <% my_name = user_names.user2_name; %> 
+    <% their_name = user_names.user1_name; %> 
+    <% their_id = message_log.user1_id; %> 
+<% }else{ %> 
+    <% console.log("Error: both user1_id and user2_id not match with user._id") %> 
+<% } %> 
+
+<%//= my_id.toString() == message_log.user1_id.toString() %> 
+<%//= JSON.stringify(my_name) %> 
+<%//= JSON.stringify(user_names.user1_name) %> 
+<%//= JSON.stringify(their_name) %> 
+<%//= JSON.stringify(user_names.user2_name) %> 
+
+<!-- When user first turn on chat window, the page will display all existing messages -->
+<% message_list.forEach(function(message) { %>
+    <!-- check for message owner -->
+
+    <% if(my_id.toString() == message.sender_id.toString()) { %> 
+    <div class="message_box my_message">
+        <div class="message_sender_name">
+            <%= "Name: " + my_name.fname + my_name.lname %> 
+        </div>
+        <div class="message_content">
+            <%= message.content %>
+        </div>
+    </div>
+    <% }else if(their_id.toString() == message.sender_id.toString()){ %> 
+    <div class="message_box their_message">
+        <div class="message_sender_name">
+            <%= "Name: " + their_name.fname + their_name.lname %> 
+        </div>
+        <div class="message_content">
+            <%= message.content %>
+        </div>
+    </div>
+    <!-- In case unrecognizable sender, highlight message -->
+    <% }else{ %> 
+    <div class="message_box error">
+        <div class="message_sender_name">
+            <%= "Error: Unknown sender" %> 
+        </div>
+        <div class="message_content">
+            <%= message.content %>
+        </div>
+    </div> 
+    <% } %> 
+<% }) %>  
