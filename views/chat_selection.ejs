@@ -8,17 +8,10 @@
 
 <div class="menu_statement">Who do you want to chat?</div>
 
-<% user.friends_list.forEach((friend) => { %>
-    <% var chatroom_link =  "window.location.href=" + "'/chatroom" ///" + friend._id + "'" %> 
-    <div class="friend_display" style="cursor: pointer" onclick= <%= chatroom_link%>>
-        <div class="friend_name"> <%= friend._id %> </div>
-        <form method="GET" action=<%= "/chat/" + friend._id%>>
-        </form>
-    </div>
+<% friends_list.forEach((friend) => { %>
+    <a class="friend_display" href="/chat/<%= friend._id %>">
+        <div class="friend_name"> <%= friend.fname %> </div>
+        <div class="friend_email"> <%= friend.email %> </div>
+        <!-- TODO: display last message, check for sender name, date sent -->
+    </a>
 <% }); %> 
-
-<% //function testFunction(){ %> 
-    <% //var text = document.getElementById('hey') %>
-    <% //console.log(text.innerText)%> 
-    <% //window.location='http://google.com'; %> 
-<% //}; %> 

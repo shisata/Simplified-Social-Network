@@ -125,23 +125,87 @@ app.get('/logout', (req, res)=>{
 
 app.get('/chat', ensureAuthenticated, async (req, res)  => {
   u = req.user;
-  console.log(u)
-  res.render('chat_selection', {user: u});
+  console.log(u);
+  // Find each friend data
+  var friends = [];
+  for(var i = 0; i < u.friends_list.length; i++){
+    const friend = await User.findById(u.friends_list[i]);
+    // TODO: find last message, sender and date
+    friends.push({
+      _id: friend._id,
+      email: friend.email,
+      fname: friend.fname,
+      lname: friend.lname
+    })
+  }
+  console.log(friends)
+  res.render('chat_selection', {user: u, friends_list: friends});
 });
 
-app.get('/chatroom', ensureAuthenticated, async (req, res) => {
-  //res.sendFile(path.join(__dirname, 'views', 'chat.html'));
+app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
   console.log("///////////////////Current User////////////////////")
-  user = req.user;
-  // console.log(user)
+  var user = req.user;
+  const user_id = user._id.toString()
+  const other_id = req.params.id.toString();
+
+  console.log(user)
+  console.log("other_id: " + other_id)
+
+  // Check if message_log is already established with the user that we are chatting with
+  console.log("///////////////////Check Message_log////////////////////")
   try{
-    console.log("///////////////////Found User////////////////////")
+    var message_log_exists = false;
+    // Loop through all message_log id to look for the one with both users
+    for(var i = 0; i < user.message_logs.length && message_log_exists == false; i++){
+      const message_log = await MessageLog.findById(user.message_logs[i])
+      const user1_id = message_log.user1_id.toString()
+      const user2_id = message_log.user2_id.toString()
+
+      if(user1_id == user_id && user2_id == other_id){
+        message_log_exists = true;
+      }else if(user2_id == user._id && user1_id == other_id){
+        message_log_exists = true;
+      }
+      console.log("Message_log: ", message_log)
+    }
+    
+    console.log("There was a message log? " + message_log_exists);
+    // If no message_log exists, create a new one
+    if(!message_log_exists){
+      const message_log = new MessageLog({
+        user1_id: user_id, // Current user id
+        user2_id: other_id, // Other user id retrieved from url
+      })
+
+      // Add message_log id to both users
+      const user1 = await User.findById(user_id);
+      const user2 = await User.findById(other_id);
+
+      await user1.message_logs.push(message_log);
+      await user2.message_logs.push(message_log);
+
+      await user1.save();
+      await user2.save();
+      await message_log.save();
+
+      console.log(console.log("////////////////////Created message log///////////////////"))
+      console.log(user1)
+      console.log(user2)
+      console.log(message_log)
+      console.log(console.log("////////////////////C///////////////////"))
+    }   
+  } catch (err){console.log(err)}
+  console.log("///////////////////////////////////////")
+    
+  // Load all existing messages and render the page 
+  try{
+    // console.log("///////////////////Found User////////////////////")
     const foundUser = await User.findById(user._id)
     const foundMessageLog = await MessageLog.findById(foundUser.message_logs[0])
     const foundMessages = await Message.findById('61b58fc4f1dd72001239c97d')
-    await console.log(foundUser)
-    await console.log(foundMessageLog)
-    console.log("///////////////////////////////////////")
+    // await console.log(foundUser)
+    // await console.log(foundMessageLog)
+    // console.log("///////////////////////////////////////")
   
     // Pushing new message into log
     // awabit foundMessageLog.messages.push(foundMessages)
@@ -211,7 +275,7 @@ app.get('/chatroom', ensureAuthenticated, async (req, res) => {
     //  });
     
 
-    console.log("///////////////////////////////////////")
+    // console.log("///////////////////////////////////////")
 
 
     await res.render('chat', {
