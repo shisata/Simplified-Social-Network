@@ -19,8 +19,8 @@
 <% var user1_id = message_log.user1_id; var user2_id = message_log.user2_id;  %> 
 
 <input id="message_log_id" type="hidden" value = <%= message_log._id %>  > </input>
-<input id="my_id" type="hidden" value = <%= user._id %>> </input>
-<input id="their_id" type="hidden" value = <%= (user._id == user1_id) ? user2_id : user1_id %>></input> <!-- Check for which one is the other side's id -->
+<input id="my_id" type="hidden" value = <%= user._id.toString() %>> </input>
+<input id="their_id" type="hidden" value = <%= (user._id.toString() == user1_id.toString()) ? user2_id.toString() : user1_id.toString() %>></input> <!-- Check for which one is the other side's id -->
 
 <script>
     ////// SocketIO
