@@ -15,6 +15,8 @@ const flash = require('connect-flash');
 const path = require('path');
 const bodyParser = require('body-parser');
 
+var async = require('async');
+
 var bcrypt = require('bcryptjs'); // Encryption for password
 const passport = require('passport'); // Handles login ?
 const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for login ?
@@ -31,6 +33,7 @@ mongoose.set('debug', true);
 
 var http = require('http');
 var socketIO = require('socket.io'); // For live connection when doing live chat
+const { request } = require('express');
 
 const app = express();
 const server = http.createServer(app);
@@ -501,33 +504,25 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
 
 
 
-
-// TO-DO
-// Add a comment to a post
-
-
-
 // FRIENDS PAGE
-
 // Shows Friends of a Current User
 app.get('/friends', ensureAuthenticated, (req, res) => {
 
   u = req.user;
+  u_id = u._id
   
-  // TO-DO: Display Users contained in user.friends_list
+  // TO-DO: Display Users That contain My ID in their friend's list
 
-  User.find({ "friends_list": u._id})
-    .then(users => res.render('friends.ejs',{ users, user:u }))
+  User.find({"friends_list": u_id})
+      .then(users => res.render('friends.ejs',{ users, user:u }))
 
 })
 
-
-// Make a friend request
+// Add a friend (NO REQUEST)
 app.post('/friends/add', ensureAuthenticated, async (req, res) => {
   
   u = req.user;
   var requested_user_email = req.body.receiver_id;
-
 
   // Find a Requested User's ID by Email:
 
@@ -535,85 +530,89 @@ app.post('/friends/add', ensureAuthenticated, async (req, res) => {
     { "email": requested_user_email}
   )
 
-  console.log("Requested User's Email: ", requested_user_email);
-  console.log("Requested User's ObjectID: ", friend_lookup._id);
+  // console.log("Requested User's Email: ", requested_user_email);
+  // console.log("Requested User's ObjectID: ", friend_lookup._id);
 
+  // // Create a new Request Object
+  // // Fill processed information
+  // const friend_req = new Request({
+  //   sender_id: u._id,
+  //   receiver_id: friend_lookup._id,
+  //   req_status: 1 // Status: Request PENDING
+  // })
 
-  // Create a new Request Object
-  // Fill processed information
-  const friend_req = new Request({
-    sender_id: u._id,
-    receiver_id: friend_lookup._id,
-    req_status: 1 // Status: Request PENDING
-  })
+  const user1 = await User.findById(u._id);
+  const user2 = await User.findById(friend_lookup._id);
+
+  await user1.friends_list.push(friend_lookup._id);
+  await user2.friends_list.push(u._id);
+
+  console.log(user1);
+  console.log(user2);
+
 
   console.log("Friend Request Sent to: ", friend_lookup.fname, " " ,friend_lookup.lname, " with ID: ", friend_lookup._id);
 
-  friend_req.save()
-    .then(request => res.redirect('/friends'))
+  await user1.save();
+  await user2.save().then(request => res.redirect('/friends'))
     .catch(err => res.status(404).json({ msg: 'No User found' }));
 
 })
 
 
-// Accept an incoming request
-app.post('/friends/add/manage', ensureAuthenticated, async (req, res) => {
+// Accept Incoming request (UNUSED)
+// app.post('/friends/add/accept', ensureAuthenticated, async (req, res) => {
 
-  // Incoming request has sender_id, receiver_id, status
-  // Find the Existing Request and Update status with Response
-  // Update Both user's friendships based on response
+//   // Incoming request has sender_id, receiver_id, status
+//   // Find the Existing Request and Update status with Response
+//   // Update Both user's friendships based on response
 
-  u = req.user;
-  friend_id = req.body.friend_id;
-  response = req.body.response;
+//   u = req.user;
+
+//   console.log("Query variabless:", req.query);
+
+//   const request = await Request.findOne({receiver_id: u._id, sender_id: friend_id})
+//   .exec(async function(err, request){
+//     if(err){return handleError(err)}
+//     try{
+//       const user1 = await User.findById(u._id);
+//       const user2 = await User.findById(friend_id);
+
+//       console.log(request);
+//       console.log(user1);
+//       console.log(user2);
+
+//       if(u._id !== friend_id){
+
+//         await request.updateOne({ $set: {req_status: 2} });
+//         await user1.friends_list.push(req.body.friend_id );
+//         await user2.friends_list.push(u._id);
+
+//         await user1.save()
+//         await user2.save()
   
-  
-  // If Added
-  // Set Status to 2 and update the Friendships for BOTH users
+//         res.status(400)
+//       }
+//       else 
+//       {
+//         res.status(400)
+//       }
+//     }catch(err){console.log(err)}
+//   })
 
-  if (response === 1) {
+//   // If Declined
+//   // Set Status to 2 and update the Friendships for BOTH users
 
-    // Satisfy the request
-    // Update Request Object' Status
-    Request.findOneAndUpdate({receiver_id: u._id, sender_id: friend_id},
-      {req_status: 2}, 
-      {upsert: true}
-    )
-
-    // TODO: Update BOTH User's Friendships
-    User.findOneAndUpdate(
-      {"_id": u._id}, {$push: {friends_list: friend_id}}
-    )
-     
-    User.findOneAndUpdate(
-      {"_id": friend_id}, {$push: {friends_list: friend_id}}
-    )
-
-  } 
-  
-  // If Declined
-  // Remove Request Object
-  // else{
-  // }
-
-  User.save()
-    .then(request => res.redirect('/friends'))
-    .catch(err => res.status(404).json({ msg: 'No User found' }));
-
-})
-
-
-// Remove an existing friend
-// app.post('/friends/remove', ensureAuthenticated, (req, res) => {
-// })
-
-// app.get(/friends/search/), (req, res) => {
+//   // Satisfy the request
+//   // Update Request Object' Status
+    
 
 // })
 
 
 
 // Check for Incoming Friend Requests
+// UNUSED
 app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
   u = req.user;

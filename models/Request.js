@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 
 // Friend request Object 
+// UNUSED
 
 const requestSchema = new Schema({
 
@@ -21,10 +22,7 @@ const requestSchema = new Schema({
     // Request statuses
     req_status: {
         type: Number,
-        enums: [
-            1,    // Pending
-            2,    // Friends
-        ]
+        required: true
     }
 
 })
