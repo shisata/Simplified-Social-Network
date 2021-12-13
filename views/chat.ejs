@@ -19,8 +19,8 @@
 <% var user1_id = message_log.user1_id; var user2_id = message_log.user2_id;  %> 
 
 <input id="message_log_id" type="hidden" value = <%= message_log._id %>  > </input>
-<input id="my_id" type="hidden" value = <%= user._id %>> </input>
-<input id="their_id" type="hidden" value = <%= (user._id === user1_id) ? user2_id : user1_id %>></input> <!-- Check for which one is the other side's id -->
+<input id="my_id" type="hidden" value = <%= user._id.toString() %>> </input>
+<input id="their_id" type="hidden" value = <%= (user._id.toString() == user1_id.toString()) ? user2_id.toString() : user1_id.toString() %>></input> <!-- Check for which one is the other side's id -->
 
 <script>
     ////// SocketIO
@@ -30,10 +30,15 @@
     var my_id = document.getElementById('my_id').value
     var their_id = document.getElementById('their_id').value
 
-    // TODO: let server know I'm chatting with this user
-
-   // Send message from text box
-   function sendMessage(){
+    // let server know I'm chatting with this user
+    socket.emit('join-chatroom-request', ({
+        message_log_id: log_id,
+        user1_id: my_id,
+        user2_id: their_id,
+    }));
+    
+    // Send message from text box
+    function sendMessage(){
         var message_value = document.getElementById('message_content').value;
         // console.log("message value: " + message);
         if(message_value != ''){
@@ -47,43 +52,48 @@
             message_content.value = '';
         }
     }
-
+     
     // Listen to incoming message and display it
     socket.on('incoming-message', function(data){
         console.log("recieved message from server: ")
         console.log(data)
+        var user_name = data.user_name;
         var sender_id = data.sender_id;
         var message = data.message;
-
+     
         // Setting up elements
         var message_box = document.createElement("div");
-        message_box.setAttribute('class', 'message_box their_message'); //TODO: check for class their_message my_message
-
         var message_sender_name = document.createElement("div");
-        message_sender_name.setAttribute('class', 'message_sender_name');
-        message_sender_name.innerText = sender_id;
-
         var message_content = document.createElement("div");
+        
+        //Check for message ownner
+        if(sender_id == my_id){
+            message_box.setAttribute('class', 'message_box my_message'); 
+        }else if(sender_id == their_id){
+            message_box.setAttribute('class', 'message_box their_message');
+        }else{
+            message_box.setAttribute('class', "message_box error");
+            console.log()
+        }
+             
+        message_sender_name.setAttribute('class', 'message_sender_name');
+        message_sender_name.innerText = "Name: " + user_name.fname + user_name.lname; 
+
         message_content.setAttribute('class', 'message_content');
         message_content.innerText = message;
-
-
+                 
         // Appending elements 
         message_box.appendChild(message_sender_name);
         message_box.appendChild(message_content);
         display.appendChild(message_box);
     })
-
-    var message_content = document.getElementById("message_content");
-    message_content.addEventListener('keyup', function (event) {
-        if (event.key === 'Enter' || event.keyCode === 13) {
-            sendMessage();
-            message_content.value = '';
-        }
-    });
-
-    // e.key is the modern way of detecting keys
-    // e.keyCode is deprecated (left here for for legacy browsers support)
-    // keyup is not compatible with Jquery select(), Keydown is.
+ 
+     var message_content = document.getElementById("message_content");
+     message_content.addEventListener('keyup', function (event) {
+         if (event.key === 'Enter' || event.keyCode === 13) {
+             sendMessage();
+             message_content.value = '';
+         }
+     });
 
 </script>
