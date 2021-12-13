@@ -29,14 +29,13 @@
 <body>
     <h1>Friends</h1>
 
-    <%- include('menu_buttons') %>
+    <%- include('./partials/menu_buttons') %>
 
     <!-- Sends a request by an ObjectId -->
-    <!-- TODO: CHANGE TO A SEARCH & ADD INSTEAD -->
     <form action="/friends/add" method="POST">
         <fieldset>
-        <h3>Add by email</h3>
-        <label>Friend's Email Address</label>
+        <h3>Add by Email</h3>
+        <label>Email Address</label>
         <input type ="receiver_id" id = 'receiver_id' name="receiver_id" required>
         
         <button type ="Submit" class="btn">Send Request</button>
@@ -46,16 +45,15 @@
 
     <!-- Check for Incoming Friend Requests -->
     <!-- Redirects to a different page -->
-    <div>
+    <!-- <div>
         <button class="btn" onclick="window.location.href='/friends/requests';">New Requests</button>
-    </div>
+    </div> -->
     
     <div>
         <h1>My Friends</h1>
         <ul>
             
             <!-- Lists Info of ALL Friends -->
-            <!-- TO-DO: Add profile links -->
 
             <% users.forEach(function(user) { %>
                 <li>
