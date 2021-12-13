@@ -307,14 +307,43 @@ io.on('connection', function(socket) {
   // Emit welcome message to current user
   console.log("Detect connection from: ", socket.id);
   // chat room will be in array
+  
+  // await process to complete
+  // check if client2 already in chat room with client1 (check DB)
+  // client1 joins client2 room
+  // create new chat room for client1 if client2 is not in chat room
 
   // Listen to client1 request that they are chatting with client2 
-  // await process to complete
-    // check if client2 already in chat room with client1 (check DB)
-      // client1 joins client2 room
-    // create new chat room for client1 if client2 is not in chat room
+  socket.on('join-chatroom-request', async function(data){
+    console.log("========join-chatroom-request==========")
+    try{
+      // Verify if 2 users match message_log (aka in correct chatroom)
+      const message_log_id = data.message_log_id.toString();
+      const user1_id = data.user1_id.toString();
+      const user2_id = data.user2_id.toString();
+      const message_log = await MessageLog.findById(message_log_id);
+      console.log("Checkpoint!!!!")
+      console.log(user1_id)
+      console.log(message_log.user1_id.toString())
+      console.log(user2_id)
+      console.log(message_log.user2_id.toString())
+      if(user1_id == message_log.user1_id.toString() && user2_id == message_log.user2_id.toString()){
+        console.log(user1_id + " is joining room: " + message_log_id)
+        socket.join(message_log_id);
+        console.log("Checkpoint1!!!!")
+      } else if(user1_id == message_log.user2_id.toString() && user2_id == message_log.user1_id.toString()){
+        console.log(user1_id + " is joining room: " + message_log_id)
+        socket.join(message_log_id);
+        console.log("Checkpoint2!!!!")
+      } else{
+        console.log("Checkpoint3!!!!")
+        throw ("Can't find both users id in message_log: ", message_log, user1_id, user2_id)
+      }
 
-    
+    }catch(err){console.log("Error: " + err)}
+    console.log("========join==========")
+  });
+  
   // Listen for message from user and push it to current message log user is using
   // Then tell user to check for new update
   socket.on('message', async function(data) {
@@ -341,12 +370,18 @@ io.on('connection', function(socket) {
       }
 
       // notify both client1 and client2 that new message is coming
-      socket.emit('incoming-message', {
+      io.to(message_log._id.toString()).emit('incoming-message', {
         user_name: u_name,
         sender_id: message.sender_id,
         message: message.content
       })
-      // io.to("some room").emit('incoming-message', data);
+
+      // socket.emit('incoming-message', {
+      //   user_name: u_name,
+      //   sender_id: message.sender_id,
+      //   message: message.content
+      // })
+
       console.log('replied back client about message')
 
     } catch(err){console.log(err)}

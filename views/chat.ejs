@@ -30,7 +30,12 @@
     var my_id = document.getElementById('my_id').value
     var their_id = document.getElementById('their_id').value
 
-    // TODO: let server know I'm chatting with this user
+    // let server know I'm chatting with this user
+    socket.emit('join-chatroom-request', ({
+        message_log_id: log_id,
+        user1_id: my_id,
+        user2_id: their_id,
+    }));
     
     // Send message from text box
     function sendMessage(){
