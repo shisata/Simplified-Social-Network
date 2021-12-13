@@ -10,7 +10,7 @@
 </head>
 <% if(typeof errors!='undefined'){ %>
 <%      errors.forEach(function(error) { %>
-<p class="error"><%=  error.msg           %></p>
+<p class="error"><%= error.msg %></p>
 <% }) %>
 <% } %>
 
@@ -57,10 +57,10 @@
       <input type ="text" id = 'Img' name="Img">
 
       <select name="privacy" id="privacy">
-        <option value="">--Post Privacy--</option>
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-        <option value="friends">Friends</option>
+        <option value="privacy">--Who can see this post?--</option>
+        <option value="public">Everyone</option>
+        <option value="friends">My Friends</option>
+        <option value="private">Only Me</option>
       </select>
 
       <button type ="reset" class="btn">Reset</button>
@@ -78,6 +78,7 @@
           <h4><%= post.Title %></h4>
           <p><%= post.Body %></p>
           <p><%= post.date %></p>
+          
         </div>
       </li>
       <% }); %>

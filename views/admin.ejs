@@ -5,7 +5,7 @@
 <p>Email : <%= user.email %></p>
 <p>First Name : <%= user.fname %> </p>
 <p>Last Name : <%= user.lname %> </p>
-<p>Registe Time:<%= user.date %> </p>
+<p>Registered Time: <%= user.date %> </p>
 
 <%- include('./partials/menu_buttons') %>
 <body>
@@ -15,30 +15,37 @@
             <% posts.forEach(function(post) { %>
             <li>
                 <div>
-                <header><%= post.owner %></header>
-                <h4><%= post.Title %></h4>
-                <p><%= post.Body %></p>
-                <p><%= post.date %></p>
+                    <% owner = users[post.owner] %>
+                    <% if (owner){ %>
+                        <header><%= owner.fname %> <%= owner.lname %></header>
+                    <% } %>
+                    <h4><%= post.Title %></h4>
+                    <p><%= post.Body %></p>
+                    <p><%= post.date %></p>
+                    <form action=/admin/comment method="post">
+                        <input type="Text" id="Content" name="Content" placeholder="Type a comment" required>
+                        <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
+                        <button type="submit" class="btn"> Post </button>
+                    </form>
                 </div>
+                <ul>
+                    
+                    <% post.comments.forEach(function(id) { %>
+                    <% comment = comments[id]; %>
+                    <% console.log("id:",id); %>
+                    <% console.log("comments:",comments); %>
+                    <% u = users[comment.user_id]; %>
+                    <li>
+                        <% if (u){ %>
+                            <header><%= u.fname %> <%= u.lname %></header>
+                        <% } %>
+                        <p><%= comment.content %></p>
+                        <p><%= comment.date %></p>
+                    </li>
+                    <% }) %>
+                </ul>           
             </li>
             <% }); %>
         </ul>
     </div>
-    <div>
-        <h1>All users</h1>
-        <ul>
-            <% users.forEach(function(user) { %>
-                <li>
-                    <%= user.email %>
-                    <% if(user.active==true) { %>
-                        online
-                        <% } else { %>
-                            offline
-                            <% } %>
-                    <%= user.email %>
-                </li>
-                <% }); %>
-        </ul>
-    </div>
-    
 </body>
