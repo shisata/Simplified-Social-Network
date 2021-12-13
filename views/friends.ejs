@@ -22,6 +22,7 @@
 <p class="error"><%=  error_msg %> </p>         
 <% } %>
 
+<%- include('./partials/menu_buttons') %>
 
 
 <!-- List All friends of a user --> 
@@ -29,7 +30,6 @@
 <body>
     <h1>Friends</h1>
 
-    <%- include('./partials/menu_buttons') %>
 
     <!-- Sends a request by an ObjectId -->
     <form action="/friends/add" method="POST">

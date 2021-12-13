@@ -21,7 +21,8 @@
   <% if(error_msg!=''){ %>
     <p class="error"><%=  error_msg %> </p>         
     <% } %>
-
+    
+<%- include('./partials/menu_buttons') %>
 
 <!-- 
   Profile Page
@@ -39,7 +40,6 @@
   <h1>My Profile</h1>
 
   <h2> Welcome <%= user.email %>!</h2>
-  <%- include('./partials/menu_buttons') %>
   <div>
 
   <form action="/profile/post" method="POST">
