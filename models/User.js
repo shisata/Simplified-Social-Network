@@ -62,4 +62,16 @@ const UserSchema = new Schema({
   // }
 
 })
+
+
+
+// function updateFriendships(user1, user2) {
+//   const schema = {
+//       name: Joi.string().min(3).required()
+//   };
+
+//   return Joi.validate(platform, schema);
+// }
+
+
 module.exports = User = mongoose.model('user', UserSchema);
