@@ -84,6 +84,23 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
+/////// Support functions
+
+// Return a list of friends with their info on it
+async function getFriendsInfo(user){
+  var friends = [];
+  for(var i = 0; i < user.friends_list.length; i++){
+    const friend = await User.findById(user.friends_list[i]);
+    // TODO: find last message, sender and date
+    friends.push({
+      _id: friend._id,
+      email: friend.email,
+      fname: friend.fname,
+      lname: friend.lname
+    })
+  }
+  return friends;
+}
 
 /////// Access URL controller
 app.get('/', (req, res) =>{
@@ -106,22 +123,26 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
   .sort({date:-1})
   .then(posts=>{
     Comment.find().sort({date:-1}).then(comments=>{
-      User.find().then(users=>{
+      User.find().then(async users=>{
         let comment_map = {};
         comments.forEach(comment => {comment_map[comment._id]=comment});
         //console.log(comment_dict);
 
         let user_map = {};
         users.forEach(user => {user_map[user._id]=user});
-        console.log("users: ", + users) 
-        console.log("user_map: ", + user_map) //user_map is currently NaN, try regular for loop instead
+        const friends = await getFriendsInfo(u)
+
+        console.log("===>users: ", users) 
+        console.log("===>user_map: ",  user_map) 
+        console.log("===>friends: ", friends)
 
         // Fixed conflict admin.ejs due to same name (users != user_map)
         res.render('admin',{
           posts: posts,
           users: users, // List of users
-          user_map: user_map, // Currently NaN, probably due to forEach loop 
+          user_map: user_map, 
           user: u,
+          friends_list: friends,
           comments: comment_map})
       });
     });
@@ -162,19 +183,12 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
   u = req.user;
   console.log(u);
   // Find each friend data
-  var friends = [];
-  for(var i = 0; i < u.friends_list.length; i++){
-    const friend = await User.findById(u.friends_list[i]);
-    // TODO: find last message, sender and date
-    friends.push({
-      _id: friend._id,
-      email: friend.email,
-      fname: friend.fname,
-      lname: friend.lname
-    })
-  }
+  const friends = await getFriendsInfo(u);
   console.log(friends)
-  res.render('chat_selection', {user: u, friends_list: friends});
+  res.render('chat_selection', {
+    user: u, 
+    friends_list: friends
+  });
 });
 
 app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
