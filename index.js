@@ -90,14 +90,18 @@ mongoose
 async function getFriendsInfo(user){
   var friends = [];
   for(var i = 0; i < user.friends_list.length; i++){
-    const friend = await User.findById(user.friends_list[i]);
-    // TODO: find last message, sender and date
-    friends.push({
-      _id: friend._id,
-      email: friend.email,
-      fname: friend.fname,
-      lname: friend.lname
-    })
+    try{
+      const friend = await User.findById(user.friends_list[i].toString());
+      // In case _id doesn't belong to any account 
+      if(friend){
+        friends.push({
+          _id: friend._id,
+          email: friend.email,
+          fname: friend.fname,
+          lname: friend.lname
+        })
+      } 
+    }  catch (err){console.log(err)}
   }
   return friends;
 }
@@ -112,6 +116,7 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/admin',ensureAuthenticated,(req, res) => {
+  
   u = req.user;
 
   u.active = true;
@@ -127,10 +132,12 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
         let comment_map = {};
         comments.forEach(comment => {comment_map[comment._id]=comment});
         //console.log(comment_dict);
-
+        console.log("=====before user_map======")
         let user_map = {};
         users.forEach(user => {user_map[user._id]=user});
+        console.log("=====before getFriendsInfo======")
         const friends = await getFriendsInfo(u)
+        console.log("=====after getFriendsInfo======")
 
         console.log("===>users: ", users) 
         console.log("===>user_map: ",  user_map) 
@@ -393,6 +400,7 @@ io.on('connection', function(socket) {
 
 /////// Post to URL controller
 app.post('/login', (req, res, next) => {
+  console.log("=====Inside ap.post /login======")
   passport.authenticate("local",{
     successRedirect : '/admin',
     failureRedirect : '/login',
