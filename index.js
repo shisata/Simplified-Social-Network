@@ -109,12 +109,23 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
       User.find().then(users=>{
         let user_map = {};
         users.forEach(user => {user_map[user._id]=user});
-        res.render('admin',{posts:posts,users:user_map,user:u,comments:comment_map})
+        console.log("user_map: ",user_map);
+        res.render('admin',{posts:posts,users:user_map,user:u,comments:comment_map});
       });
     });
   });
   
   //.then(users => parameters[]=user)
+});
+
+app.post('/admin/like',(req, res)=>{
+  u = req.user;
+  console.log("post_id: user: ",req.body.post_id,u);
+  Post.findOne({_id:req.body.post_id}).then(p=>{
+    p.likes.push(u._id);
+    p.save().then(post => res.status(201).send(p.likes.length));
+    console.log("likes: ",p.likes);
+  });
 });
 
 app.post('/admin/comment',(req, res)=>{
