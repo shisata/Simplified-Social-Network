@@ -1,7 +1,11 @@
 <!-- Main page after logged in -->
 <%- include('./partials/header') %>
+<%- include('./partials/sidebar_chat') %>
 
-<h2> Welcome <%= user.fname %></h2>
+<div class="outer_most_div">
+<%- include('./partials/menu_buttons') %>
+
+<h2>Welcome <%= user.fname %></h2>
 <p>Email : <%= user.email %></p>
 <p>First Name : <%= user.fname %> </p>
 <p>Last Name : <%= user.lname %> </p>
@@ -24,7 +28,6 @@
     }
 </script>
 
-<%- include('./partials/menu_buttons') %>
 <body>
     <div>
         <h1>My Feed:</h1>
@@ -33,7 +36,7 @@
             <% posts.forEach(function(post) { %>
             <li>
                 <div>
-                    <% owner = users[post.owner] %>
+                    <% owner = user_map[post.owner] %>
                     <% if (owner){ %>
                         <header><%= owner.fname %> <%= owner.lname %></header>
                     <% } %>
@@ -58,7 +61,9 @@
                 <ul>
                     <% post.comments.forEach(function(id) { %>
                     <% comment = comments[id]; %>
-                    <% u = users[comment.user_id]; %>
+                    <% console.log("id:",id); %>
+                    <% console.log("comments:",comments); %>
+                    <% u = user_map[comment.user_id]; %>
                     <li>
                         <% if (u){ %>
                             <header><%= u.fname %> <%= u.lname %></header>
@@ -72,4 +77,40 @@
             <% }); %>
         </ul>
     </div>
+    <div>
+        <h1>All users</h1>
+        <ul>
+
+            <% logged_in_usr = user._id %>
+
+            <% users.forEach(function(user) { %>
+                <li>
+                    <%= user.email %>
+                    <% if(user.active==true) { %>
+                        online
+                        <% } else { %>
+                            offline
+                            <% } %>
+
+
+                    <% if((logged_in_usr in user.friends_list) === false) { %>
+                    
+                        <form action="/friends/add/" method="POST">
+
+                            <input type="hidden" name="receiver_id" value="<%= user.email%>">
+                            <input type="submit" name="response" value=Add />
+            
+                        </form>
+
+                    <% } %>
+        
+                    
+
+                </li>
+                <% }); %>
+        </ul>
+    </div>
+    
 </body>
+
+</div>

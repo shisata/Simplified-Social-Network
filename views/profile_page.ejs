@@ -21,25 +21,28 @@
   <% if(error_msg!=''){ %>
     <p class="error"><%=  error_msg %> </p>         
     <% } %>
-
-
-<!-- 
-  Profile Page
-
-  1. User can see their own posts on a Profile page
-  2. User can make posts on their profile page
-  3. Privacy of each post can be changed to Public, Friends or Private
-  
--->
-
-
+    
+    <%- include('./partials/sidebar_chat') %>
+    
+    <!-- 
+      Profile Page
+      
+      1. User can see their own posts on a Profile page
+      2. User can make posts on their profile page
+      3. Privacy of each post can be changed to Public, Friends or Private
+      
+    -->
+    
+    
+    
 
 <body>
+  <div class="outer_most_div">
+  <%- include('./partials/menu_buttons') %>
 
   <h1>My Profile</h1>
 
   <h2> Welcome <%= user.email %>!</h2>
-  <%- include('./partials/menu_buttons') %>
   <div>
 
   <form action="/profile/post" method="POST">
@@ -83,7 +86,7 @@
       </li>
       <% }); %>
   </ul>
-
+  </div>
 </body>
 
 </html>

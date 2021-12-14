@@ -21,15 +21,15 @@
 <% if(error_msg!=''){ %>
 <p class="error"><%=  error_msg %> </p>         
 <% } %>
-
-
+<%- include('./partials/sidebar_chat') %>
 
 <!-- List All friends of a user --> 
 
 <body>
+    <div class="outer_most_div">
+    <%- include('./partials/menu_buttons') %>
     <h1>Friends</h1>
 
-    <%- include('./partials/menu_buttons') %>
 
     <!-- Sends a request by an ObjectId -->
     <form action="/friends/add" method="POST">
@@ -45,9 +45,9 @@
 
     <!-- Check for Incoming Friend Requests -->
     <!-- Redirects to a different page -->
-    <!-- <div>
+    <div>
         <button class="btn" onclick="window.location.href='/friends/requests';">New Requests</button>
-    </div> -->
+    </div>
     
     <div>
         <h1>My Friends</h1>
@@ -62,11 +62,19 @@
                     <%= user.email %>
                 </li>
 
+                <form action="/friends/remove" method="POST">
+
+                    <input type="hidden" name="friend_id" value="<%= user.email%>">
+                    <input type="submit" name="response" value=Remove />
+    
+                </form>
+            
+
                 <% }); %>
 
         </ul>
     </div>
-
+    </div>
 </body>
 
 

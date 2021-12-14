@@ -22,13 +22,12 @@
 <p class="error"><%=  error_msg %> </p>         
 <% } %>
 
-<!-- UNUSED -->
 <!-- Lists Incoming Requests -->
 <body>
+    <div class="outer_most_div">
+    <%- include('./partials/menu_buttons') %>
 
-   
 
-    
     <% requests.forEach(function(user) { %>
         <li>
             Sender
@@ -37,18 +36,21 @@
             <%= user.receiver_id %>    
 
             <form action="/friends/add/accept" method="POST">
-                <input type="submit" name="response" value=1 />
-                <!-- <input type="hidden" name="friend_id" value=/> -->
+
+                <input type="hidden" name="friend_id" value="<%= user.sender_id%>">
+                <input type="submit" name="response" value=Accept />
+
             </form>
+            
 
         </li>
 
         
-        
-        <!-- ADD Response and Friend ID fields (USED in add/manage) -->
+
 
 
     <% }); %>
+    </div>
 
 </body>
 
