@@ -30,6 +30,12 @@ This is the page where you can send friend requests. Friend requests are sent by
 
 <more description>
 
+## Sample user
+You can use a preset user with:
+email:diobrando@diobrando.wry
+password:diobrando
+
+
 ## How to run
 ```
 docker-compose build && docker-compose up
