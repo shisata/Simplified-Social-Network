@@ -12,17 +12,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('connect-flash');
-<<<<<<< HEAD
 const passport = require('passport');
-const {ensureAuthenticated} = require('./auth.js');
-=======
 const path = require('path');
 const bodyParser = require('body-parser');
 
 var async = require('async');
 
 var bcrypt = require('bcryptjs'); // Encryption for password
-const passport = require('passport'); // Handles login ?
 const {ensureAuthenticated} = require('./models/Auth.js') // Authentication for login ?
 const User = require('./models/User'); // Schema for User using mongoose
 const Post = require('./models/Post');
@@ -40,7 +36,6 @@ mongoose.set('debug', true);
 var http = require('http');
 var socketIO = require('socket.io'); // For live connection when doing live chat
 const { request } = require('express');
->>>>>>> origin/master
 
 const app = express();
 const server = http.createServer(app);
@@ -492,9 +487,6 @@ app.post('/register', (req, res) => {
 });
 
 
-<<<<<<< HEAD
-app.get('/logout', (req, res)=>{
-=======
 
 // PROFILE
 
@@ -503,7 +495,6 @@ app.get('/logout', (req, res)=>{
 
 app.get('/profile', ensureAuthenticated, (req, res) => {
 
->>>>>>> origin/master
   u = req.user;
   
 
