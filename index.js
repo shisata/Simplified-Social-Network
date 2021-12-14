@@ -787,14 +787,14 @@ app.get('/settings', (req, res) => {
 
   u = req.user;
 
-  res.render('settings.ejs', {user:u})
+  res.render('settings.ejs', {user:u, page_title: "Settings"})
 
 })
 
 // Under Construction Page
 app.get('/construction', (req, res) => {
 
-  res.render('construction.ejs')
+  res.render('construction.ejs', {page_title: "Under construction!"})
 })
 
 
