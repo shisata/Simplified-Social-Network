@@ -15,7 +15,11 @@
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(data)
         }).then(res => {
-            console.log("Request complete! response:", res);
+            return res.json();
+        }).then(data => {
+            console.log("Request complete! response:", data);
+            document.getElementById("like_counter").innerText = data.likes.length + " people have liked this post.";
+            document.getElementById("like_button").innerText = data.mode;
         });
     }
 </script>
@@ -42,7 +46,8 @@
                         <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
                         <button type="submit" class="btn"> Post </button>
                     </form>
-                    <button type="submit" class="btn" onclick="myfunction('<%= post._id %>')"> Like </button>
+                    <p id="like_counter"> <%= post.likes.length %> people have liked this post. </p>
+                    <button type="button" id="like_button" class="btn" onclick="myfunction('<%= post._id %>')"> Like </button>
                     
                     <!--<form action="/admin/like">
                         <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
