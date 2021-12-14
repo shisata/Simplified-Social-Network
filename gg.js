@@ -1,5 +1,5 @@
 var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var GoogleStrategy = require('passport-google-Oauth20').Strategy;
 const User = require('./models/User');
 
 passport.use(new GoogleStrategy({
@@ -9,22 +9,21 @@ passport.use(new GoogleStrategy({
     passReqToCallback: true
 },
 function(accessToken, refreshToken, profile ,email ,done) {
+    console.log(email);
     var em = email.emails[0].value;
-    var fn = email.name.givenName;
-    var ln = email.name.familyName;
+    let errors = [];
+    
 
 
     User.findOne({email:em}).exec((err,user)=>{
         if(user){
             return done(err, user);
         } else {
-            const newUser = new User({
-                email: em,
-                fname: fn,
-                lname: ln
-            
-            });
-            newUser.save();
+            errors.push({msg:"please registst first!"});
+            res.render('register',{
+                errors:errors,
+                email:em,
+              });
             return done(err, user);
         
         }

@@ -677,7 +677,6 @@ require('./gg.js');
 app.get('/auth/google', (req, res, next) => {
   passport.authenticate('google',{
     scope:[
-    'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
     ]
   })(req, res, next);

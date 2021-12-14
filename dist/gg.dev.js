@@ -2,7 +2,7 @@
 
 var passport = require('passport');
 
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var GoogleStrategy = require('passport-google-Oauth20').Strategy;
 
 var User = require('./models/User');
 
@@ -12,21 +12,22 @@ passport.use(new GoogleStrategy({
   callbackURL: "/auth/google/callback",
   passReqToCallback: true
 }, function (accessToken, refreshToken, profile, email, done) {
+  console.log(email);
   var em = email.emails[0].value;
-  var fn = email.name.givenName;
-  var ln = email.name.familyName;
+  var errors = [];
   User.findOne({
     email: em
   }).exec(function (err, user) {
     if (user) {
       return done(err, user);
     } else {
-      var newUser = new User({
-        email: em,
-        fname: fn,
-        lname: ln
+      errors.push({
+        msg: "please registst first!"
       });
-      newUser.save();
+      res.render('register', {
+        errors: errors,
+        email: em
+      });
       return done(err, user);
     }
   });
