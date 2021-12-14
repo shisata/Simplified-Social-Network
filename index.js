@@ -192,7 +192,6 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
 });
 
 app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
-  console.log("///////////////////Current User////////////////////")
   var user = req.user;
   const user_id = user._id.toString()
   const other_id = req.params.id.toString();
@@ -202,7 +201,6 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
   console.log("other_id: " + other_id)
 
   // Check if message_log is already established with the user that we are chatting with
-  // console.log("///////////////////Check Message_log////////////////////")
   try{
     var message_log_exists = false;
     // Loop through all message_log id to look for the one with both users
@@ -241,33 +239,15 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
       await message_log.save();
       message_log_id = message_log._id;
 
-      // console.log(console.log("////////////////////Created message log///////////////////"))
-      // console.log(user1)
-      // console.log(user2)
-      // console.log(message_log)
-      // console.log(console.log("////////////////////C///////////////////"))
+
     }   
   } catch (err){console.log(err)}
-  // console.log("///////////////////////////////////////")
+
     
   // Load all existing messages and render the page 
   try{
-    // console.log("///////////////////Found User////////////////////")
     const foundUser = await User.findById(user._id)
     const foundMessageLog = await MessageLog.findById(message_log_id)
-    // const foundMessages = await Message.findById('61b58fc4f1dd72001239c97d')
-    // await console.log(foundUser)
-    // await console.log(foundMessageLog)
-    // console.log("///////////////////////////////////////")
-  
-    // Pushing new message into log
-    // awabit foundMessageLog.messages.push(foundMessages)
-    // await foundMessageLog.save(function(err, result){
-    //   if(err){console.log(err)}
-    //   else{
-    //     console.log(result)
-    //   }
-    // })
 
     // Find both users name to send to client
     const u1 = await User.findById(foundMessageLog.user1_id);
@@ -300,53 +280,17 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
       messages.push(message)
     }
 
-    // await User
-    //  .find({_id: '61b29a093f00ea001a3e70c2'})
-    //  .populate('message_logs')
-    //  .exec(function(err, user){
-    //    if (err) {return handleError(err)}
-    //    console.log(user);
-    //   });
+    // Finding friends info for sidebar
+    const friends = await getFriendsInfo(u);
+    console.log("=====>friends: ", friends);
 
-
-    // // Checking if messages in MessagesLog are schemas 
-    // await MessageLog
-    //  .findOne({_id: foundUser.message_logs[0], content: 'First message ever!!'})//()
-    //  .populate('messages')
-    //  .exec(function(err, message_log){
-    //   if (err) {return handleError(err)}
-    //   console.log(message_log);
-    //  });
-
-    // Checking if message_logs in User are schemas
-    // await User
-    //  .findOne()
-    //  .populate()
-    //  .exec(function(err, user){
-    //   if (err) {return handleError(err)}
-    //   console.log(user);
-    //  });
-    
-
-    // console.log("///////////////////////////////////////")
-
-
-    await res.render('chat', {
+    res.render('chat', {
       user : foundUser, 
       user_names: u_names, 
       message_log: foundMessageLog,
-      message_list: messages
+      message_list: messages,
+      friends_list: friends
     })
-
-    // console.log("///////////////////After Push////////////////////")
-    // console.log(await MessageLog.findById(foundUser.message_logs[0]))
-
-
-    // MessageLog.findById('61b533f0323caf001474ea4f')
-    // .populate()
-    // .then((result) => {
-    //   console.log(result.messages)
-    // }).catch((err) => {console.log(err)})
 
   } catch (err){console.log(err)}
 })
@@ -524,9 +468,20 @@ app.post('/register', (req, res) => {
 app.get('/profile', ensureAuthenticated, (req, res) => {
 
   u = req.user;
+  
 
   Post.find({owner: u._id})
-    .then(posts => res.render('profile_page.ejs', { posts, user:u }))
+    .then(async posts => {
+      // Finding friends info for sidebar
+      const friends = await getFriendsInfo(u);
+      console.log("=====>friends: ", friends);
+
+      res.render('profile_page.ejs', { 
+        posts, 
+        user: u,
+        friends_list: friends,
+      })
+    })
     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
 
 });
@@ -534,7 +489,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 
 // Submit a Post to "My" profile when Authenticated
 
-app.post('/profile/post', ensureAuthenticated, (req, res) => {
+app.post('/profile/post', ensureAuthenticated, async (req, res) => {
   u = req.user;
   const newPost = new Post({
     Title: req.body.Title,
@@ -543,7 +498,9 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
     privacy: req.body.privacy
   })
 
-  newPost.save().then(post => res.redirect('/profile'));
+  newPost.save().then(post => {
+    res.redirect('/profile')
+  });
 });
 
 
@@ -557,7 +514,17 @@ app.get('/friends', ensureAuthenticated, (req, res) => {
   
   // Display Users That contain My ID in their friend's list
   User.find({"friends_list": u_id})
-      .then(users => res.render('friends.ejs',{ users, user:u }))
+      .then(async users => {
+        // Finding friends info for sidebar
+        const friends = await getFriendsInfo(u);
+        console.log("=====>friends: ", friends);
+
+        res.render('friends.ejs',{ 
+          users, 
+          user: u,
+          friends_list: friends,
+        })
+      })
 
 })
 

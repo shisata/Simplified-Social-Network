@@ -22,21 +22,23 @@
     <p class="error"><%=  error_msg %> </p>         
     <% } %>
     
-<%- include('./partials/menu_buttons') %>
-
-<!-- 
-  Profile Page
-
-  1. User can see their own posts on a Profile page
-  2. User can make posts on their profile page
-  3. Privacy of each post can be changed to Public, Friends or Private
-  
--->
-
-
+    <%- include('./partials/sidebar_chat') %>
+    
+    <!-- 
+      Profile Page
+      
+      1. User can see their own posts on a Profile page
+      2. User can make posts on their profile page
+      3. Privacy of each post can be changed to Public, Friends or Private
+      
+    -->
+    
+    
+    
 
 <body>
   <div class="outer_most_div">
+  <%- include('./partials/menu_buttons') %>
 
   <h1>My Profile</h1>
 
