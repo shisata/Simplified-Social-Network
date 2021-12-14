@@ -1,6 +1,6 @@
 ## Implementation
 Front-End Server: nginx
-Back-End Server: NodeJS
+Back-End Server: NodeJS with Express 
 Database: MongoDB
 ## What is this project about?
 A simplified social network webapp. It lets users connect with each other, make new friends, share moments through posts, and chat.
