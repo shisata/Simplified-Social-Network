@@ -781,9 +781,8 @@ app.get('/settings', (req, res) => {
 // Under Construction Page
 app.get('/construction', (req, res) => {
 
-  res.render('stories.ejs')
+  res.render('construction.ejs')
 })
-
 
 
 // Page in case user access wrong url
