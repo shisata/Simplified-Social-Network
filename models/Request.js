@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 
 // Friend request Object 
-// UNUSED
 
 const requestSchema = new Schema({
 
