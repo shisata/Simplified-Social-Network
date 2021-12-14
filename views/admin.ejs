@@ -34,8 +34,8 @@
         <!--display posts-->
         <ul>
             <% posts.forEach(function(post) { %>
-            <li>
-                <div>
+            <li class="wrapper_post_box">
+                <div class="post_box">
                     <% owner = user_map[post.owner] %>
                     <% if (owner){ %>
                         <header><%= owner.fname %> <%= owner.lname %></header>
@@ -58,7 +58,7 @@
                     </form>-->
                 </div>
                 <!--display comments-->
-                <ul>
+                <ul class="comment_box">
                     <% post.comments.forEach(function(id) { %>
                     <% comment = comments[id]; %>
                     <% console.log("id:",id); %>

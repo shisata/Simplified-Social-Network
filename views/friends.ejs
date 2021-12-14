@@ -28,13 +28,13 @@
 <body>
     <div class="outer_most_div">
     <%- include('./partials/menu_buttons') %>
-    <h1>Friends</h1>
+    <h1><%= page_title %> </h1>
 
 
     <!-- Sends a request by an ObjectId -->
     <form action="/friends/add" method="POST">
         <fieldset>
-        <h3>Add by Email</h3>
+        <h3>Want to add a friend through email?</h3>
         <label>Email Address</label>
         <input type ="receiver_id" id = 'receiver_id' name="receiver_id" required>
         
@@ -46,7 +46,7 @@
     <!-- Check for Incoming Friend Requests -->
     <!-- Redirects to a different page -->
     <div>
-        <button class="btn" onclick="window.location.href='/friends/requests';">New Requests</button>
+        <button class="btn" onclick="window.location.href='/friends/requests';">Check For New Friend Requests</button>
     </div>
     
     <div>

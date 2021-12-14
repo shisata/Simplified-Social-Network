@@ -108,11 +108,11 @@ async function getFriendsInfo(user){
 
 /////// Access URL controller
 app.get('/', (req, res) =>{
-  res.render('index', {});
+  res.render('index', {page_title: "Welcome!"});
 });
 
 app.get('/register', (req, res) => {
-  res.render('register',{});
+  res.render('register',{page_title: "Register"});
 });
 
 app.get('/admin',ensureAuthenticated,(req, res) => {
@@ -150,7 +150,9 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
           user_map: user_map, 
           user: u,
           friends_list: friends,
-          comments: comment_map})
+          comments: comment_map,
+          page_title: ('Home | ' +  u.fname)
+        })
       });
     });
   });
@@ -194,7 +196,7 @@ app.post('/admin/comment',(req, res)=>{
 });
 
 app.get('/login', (req, res) => {
-  res.render('login',{})
+  res.render('login',{page_title: 'Login'})
 });
 
 app.get('/logout', (req, res)=>{
@@ -206,6 +208,8 @@ app.get('/logout', (req, res)=>{
   res.redirect('/')
 });
 
+
+// Page to select a friend to chat with 
 app.get('/chat', ensureAuthenticated, async (req, res)  => {
   u = req.user;
   console.log(u);
@@ -214,10 +218,12 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
   console.log(friends)
   res.render('chat_selection', {
     user: u, 
-    friends_list: friends
+    friends_list: friends,
+    page_title: ('Select chat')
   });
 });
 
+// Chatroom with selected friend
 app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
   var user = req.user;
   const user_id = user._id.toString()
@@ -316,7 +322,8 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
       user_names: u_names, 
       message_log: foundMessageLog,
       message_list: messages,
-      friends_list: friends
+      friends_list: friends,
+      page_title: (u_names.user1_name.fname + " & " + u_names.user2_name.fname)
     })
 
   } catch (err){console.log(err)}
@@ -508,6 +515,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
         posts, 
         user: u,
         friends_list: friends,
+        page_title: 'My Profile'
       })
     })
     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
@@ -551,6 +559,7 @@ app.get('/friends', ensureAuthenticated, (req, res) => {
           users, 
           user: u,
           friends_list: friends,
+          page_title: 'Let\'s add a friend!'
         })
       })
 
@@ -730,11 +739,15 @@ app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
   u = req.user;
   
-  User.find().then(users=>{
-    Request.find({receiver_id : u._id, req_status: 1}).then(requests=>{
-      res.render('request_check.ejs',{requests, user:u, all_users:users})
-    })
-  })
+  User.find()
+  .then( users => {
+    Request
+    .find({receiver_id : u._id, req_status: 1})
+    .then( async requests => {
+
+      res.render('request_check.ejs',{requests, user:u, all_users:users, page_title: 'Friend Requests'})
+    }).catch(err => console.log(err));
+  }).catch(err => console.log(err));
 
 })
 
@@ -743,7 +756,7 @@ app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 // Page in case user access wrong url
 app.use((req, res) => {
 
-  res.render('wrong_url', {wrong_url: req.url});
+  res.render('wrong_url', {wrong_url: req.url, page_title: "Oooppsie!!"});
 
 })
 const PORT = 3000; //Port of backend container

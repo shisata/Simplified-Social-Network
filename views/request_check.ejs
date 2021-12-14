@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="stylesheets/style.css">
-  <title>Incoming Requests</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <title><%= page_title %> </title>
 </head>
 
 <% if(typeof errors!='undefined'){ %>
@@ -21,6 +21,7 @@
 <% if(error_msg!=''){ %>
 <p class="error"><%=  error_msg %> </p>         
 <% } %>
+<%//- include('./partials/sidebar_chat') %>
 
 <!-- Lists Incoming Requests -->
 <body>

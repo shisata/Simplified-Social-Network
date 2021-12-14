@@ -112,7 +112,7 @@ h2{
   /* background-color:rgb(24, 25, 26); */
   overflow: hidden;
   padding: 30px;
-  overflow-y: scroll;
+  overflow-y: auto;
   /* border-left: var(--highlight_color) 5px; */
   /* background-color: var(--highlight_color_light); */
 }
@@ -164,6 +164,37 @@ h2{
 
 /******************************/
 
+/***************Posts Box***************/
+
+li{
+  list-style-type: none;
+}
+
+.wrapper_post_box{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+
+.post_box{
+  background-color: rgb(233, 248, 255);
+  padding: 20px;
+}
+
+.post_box > *{
+  background-color: rgb(233, 248, 255);
+}
+
+/* .post_box > button{
+  background-color: rgb(233, 248, 255);
+} */
+
+.comment_box{
+  padding: 20px;
+}
+
+/******************************/
+
 /***************Chat Box***************/
 
 .friend_display{
@@ -196,18 +227,53 @@ h2{
   /* padding: 20px;
 }  */ */
 
+.chat_display_div {
+  height: 50%;
+  overflow-y: scroll;
+}
 
-/* .message_box.their_message{
-  background-color: grey;
-  margin-right: auto;
+.message_box {
+  width: 30%;
+  margin-top: 20px;
+  padding: 20px;
+  border: 20px;
+  border-radius: 20%;
 }
-.message_box.my_message{
-  background-color: rgb(157, 221, 243);
-  margin-right: auto;
+.message_box.their_message{
+  position: relative;
+  left: 0;
 }
-.message_box:hover, .friend_display:hover {
+
+.message_box.their_message{
+  position: relative;
+  right: 0;
+}
+
+
+
+.message_box.their_message, .message_box.their_message div{
   background-color: lightgray;
-} */
+  /* margin-left: 0; */
+}
+.message_box.my_message,  .message_box.my_message div {
+  background-color: var(--highlight_color_light);
+  /* margin-right: 0; */
+}
+
+.message_box.their_message:hover, .message_box.their_message div:hover{ /*, .friend_display:hover {*/
+  background-color: grey;
+}
+
+.message_box.my_message:hover, .message_box.my_message div:hover{
+  background-color: var(--highlight_color);
+}
+
+.message_sender_name{
+  font-weight: bold;
+}
+
+
+
 /******************************/
 
 
