@@ -1,0 +1,102 @@
+<!-- Chat page -->
+<%- include('./partials/header') %>
+<%- include('./partials/sidebar_chat') %>
+<script src="/socket.io/socket.io.js"></script>
+
+<div class="outer_most_div">
+<%- include('./partials/menu_buttons') %>
+    <h1> Chat</h1>
+    <!-- Check if received user data and message_log from server -->
+
+    <div class="chat_display_div" id="chat_display_id">
+        <%- include('./partials/message_box') %>
+    </div>
+
+    <div class="chat_input_div">
+        <input id = "message_content" type = "text" placeholder = "Enter message.." required/>
+        <!-- <textarea name="message-content" id="message-content" placeholder="Enter message..." cols="30" rows="10"></textarea> -->
+        <button id = "send_button" class="btn" onclick="sendMessage()">Send</button>
+    </div>
+
+    <% var user1_id = message_log.user1_id; var user2_id = message_log.user2_id;  %> 
+
+    <input id="message_log_id" type="hidden" value = <%= message_log._id %>  > </input>
+    <input id="my_id" type="hidden" value = <%= user._id.toString() %>> </input>
+    <input id="their_id" type="hidden" value = <%= (user._id.toString() == user1_id.toString()) ? user2_id.toString() : user1_id.toString() %>></input> <!-- Check for which one is the other side's id -->
+
+</div>
+<script>
+    ////// SocketIO
+    const socket = io();
+    var display = document.getElementById('chat_display_id')
+    var log_id = document.getElementById('message_log_id').value
+    var my_id = document.getElementById('my_id').value
+    var their_id = document.getElementById('their_id').value
+
+    // let server know I'm chatting with this user
+    socket.emit('join-chatroom-request', ({
+        message_log_id: log_id,
+        user1_id: my_id,
+        user2_id: their_id,
+    }));
+    
+    // Send message from text box
+    function sendMessage(){
+        var message_value = document.getElementById('message_content').value;
+        // console.log("message value: " + message);
+        if(message_value != ''){
+            var data = {
+                message_log_id: log_id,
+                sender_id: my_id,
+                message: message_value
+            };
+            socket.emit('message', data);
+            // Clean up input
+            message_content.value = '';
+        }
+    }
+     
+    // Listen to incoming message and display it
+    socket.on('incoming-message', function(data){
+        console.log("recieved message from server: ")
+        console.log(data)
+        var user_name = data.user_name;
+        var sender_id = data.sender_id;
+        var message = data.message;
+     
+        // Setting up elements
+        var message_box = document.createElement("div");
+        var message_sender_name = document.createElement("div");
+        var message_content = document.createElement("div");
+        
+        //Check for message ownner
+        if(sender_id == my_id){
+            message_box.setAttribute('class', 'message_box my_message'); 
+        }else if(sender_id == their_id){
+            message_box.setAttribute('class', 'message_box their_message');
+        }else{
+            message_box.setAttribute('class', "message_box error");
+            console.log()
+        }
+             
+        message_sender_name.setAttribute('class', 'message_sender_name');
+        message_sender_name.innerText = "Name: " + user_name.fname + user_name.lname; 
+
+        message_content.setAttribute('class', 'message_content');
+        message_content.innerText = message;
+                 
+        // Appending elements 
+        message_box.appendChild(message_sender_name);
+        message_box.appendChild(message_content);
+        display.appendChild(message_box);
+    })
+ 
+     var message_content = document.getElementById("message_content");
+     message_content.addEventListener('keyup', function (event) {
+         if (event.key === 'Enter' || event.keyCode === 13) {
+             sendMessage();
+             message_content.value = '';
+         }
+     });
+
+</script>

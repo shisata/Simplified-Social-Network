@@ -1,15 +1,88 @@
-<%- include('header') %>
+<!-- Main page after logged in -->
+<%- include('./partials/header') %>
+<%- include('./partials/sidebar_chat') %>
 
-<h2> Welcome <%= user.fname %></h2>
+<div class="outer_most_div">
+<%- include('./partials/menu_buttons') %>
+
+<h2>Welcome <%= user.fname %></h2>
 <p>Email : <%= user.email %></p>
 <p>First Name : <%= user.fname %> </p>
 <p>Last Name : <%= user.lname %> </p>
-<p>Registe Time:<%= user.date %> </p>
-<button class="btn" onclick="window.location.href='/logout';">logout</button>
+<p>Registered Time: <%= user.date %> </p>
+
+<script>
+    function myfunction(post_id){
+        let data = {post_id:post_id};
+        fetch("/admin/like", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+        }).then(res => {
+            return res.json();
+        }).then(data => {
+            console.log("Request complete! response:", data);
+            document.getElementById("like_counter").innerText = data.likes.length + " people have liked this post.";
+            document.getElementById("like_button").innerText = data.mode;
+        });
+    }
+</script>
+
 <body>
+    <div>
+        <h1>My Feed:</h1>
+        <!--display posts-->
+        <ul>
+            <% posts.forEach(function(post) { %>
+            <li>
+                <div>
+                    <% owner = user_map[post.owner] %>
+                    <% if (owner){ %>
+                        <header><%= owner.fname %> <%= owner.lname %></header>
+                    <% } %>
+                    <h4><%= post.Title %></h4>
+                    <p><%= post.Body %></p>
+                    <p><%= post.date %></p>
+                    <p><%= post.privacy %> can see this post</p>
+                    <form action="/admin/comment" method="post">
+                        <input type="Text" id="Content" name="Content" placeholder="Type a comment" required>
+                        <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
+                        <button type="submit" class="btn"> Post </button>
+                    </form>
+                    <p id="like_counter"> <%= post.likes.length %> people have liked this post. </p>
+                    <button type="button" id="like_button" class="btn" onclick="myfunction('<%= post._id %>')"> Like </button>
+                    
+                    <!--<form action="/admin/like">
+                        <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
+                        
+                    </form>-->
+                </div>
+                <!--display comments-->
+                <ul>
+                    <% post.comments.forEach(function(id) { %>
+                    <% comment = comments[id]; %>
+                    <% console.log("id:",id); %>
+                    <% console.log("comments:",comments); %>
+                    <% u = user_map[comment.user_id]; %>
+                    <li>
+                        <% if (u){ %>
+                            <header><%= u.fname %> <%= u.lname %></header>
+                        <% } %>
+                        <p><%= comment.content %></p>
+                        <p><%= comment.date %></p>
+                    </li>
+                    <% }) %>
+                </ul>           
+            </li>
+            <% }); %>
+        </ul>
+    </div>
     <div>
         <h1>All users</h1>
         <ul>
+
+            <% logged_in_usr = user._id %>
+
             <% users.forEach(function(user) { %>
                 <li>
                     <%= user.email %>
@@ -18,9 +91,26 @@
                         <% } else { %>
                             offline
                             <% } %>
+
+
+                    <% if((logged_in_usr in user.friends_list) === false) { %>
+                    
+                        <form action="/friends/add/" method="POST">
+
+                            <input type="hidden" name="receiver_id" value="<%= user.email%>">
+                            <input type="submit" name="response" value=Add />
+            
+                        </form>
+
+                    <% } %>
+        
+                    
+
                 </li>
                 <% }); %>
         </ul>
     </div>
     
 </body>
+
+</div>

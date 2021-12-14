@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <title>Friends</title>
+</head>
+
+<% if(typeof errors!='undefined'){ %>
+<%      errors.forEach(function(error) { %>
+<p class="error"><%=  error.msg           %></p>
+<% }) %>
+<% } %>
+
+<% if(success_msg!=''){ %>
+<p class="error"><%=  success_msg %> </p>         
+<% } %>
+
+<% if(error_msg!=''){ %>
+<p class="error"><%=  error_msg %> </p>         
+<% } %>
+<%- include('./partials/sidebar_chat') %>
+
+<!-- List All friends of a user --> 
+
+<body>
+    <div class="outer_most_div">
+    <%- include('./partials/menu_buttons') %>
+    <h1>Friends</h1>
+
+
+    <!-- Sends a request by an ObjectId -->
+    <form action="/friends/add" method="POST">
+        <fieldset>
+        <h3>Add by Email</h3>
+        <label>Email Address</label>
+        <input type ="receiver_id" id = 'receiver_id' name="receiver_id" required>
+        
+        <button type ="Submit" class="btn">Send Request</button>
+
+        </fieldset>
+    </form>
+
+    <!-- Check for Incoming Friend Requests -->
+    <!-- Redirects to a different page -->
+    <div>
+        <button class="btn" onclick="window.location.href='/friends/requests';">New Requests</button>
+    </div>
+    
+    <div>
+        <h1>My Friends</h1>
+        <ul>
+            
+            <!-- Lists Info of ALL Friends -->
+
+            <% users.forEach(function(user) { %>
+                <li>
+                    <%= user.fname %>
+                    <%= user.lname %>
+                    <%= user.email %>
+                </li>
+
+                <form action="/friends/remove" method="POST">
+
+                    <input type="hidden" name="friend_id" value="<%= user.email%>">
+                    <input type="submit" name="response" value=Remove />
+    
+                </form>
+            
+
+                <% }); %>
+
+        </ul>
+    </div>
+    </div>
+</body>
+
+
+</html>
