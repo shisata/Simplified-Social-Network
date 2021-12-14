@@ -290,7 +290,7 @@ li{
 /******************************/
 
 
-.btn {
+.btn, .post_button {
   padding: 10px;
   width: 50%;
   /* margin: 0 auto; */
@@ -298,6 +298,14 @@ li{
   display: flex;
 
 }
+
+.post_button{
+  background-color: #4CAF50;
+  font-weight: bold;
+  font-style: black;
+}
+
+
 .error{ 
   color:red;
   font-size: large;

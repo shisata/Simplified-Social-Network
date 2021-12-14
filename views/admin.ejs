@@ -38,19 +38,19 @@
                 <div class="post_box">
                     <% owner = user_map[post.owner] %>
                     <% if (owner){ %>
-                        <header><%= owner.fname %> <%= owner.lname %></header>
+                        <header class="post_name"><%= owner.fname %> <%= owner.lname %></header>
                     <% } %>
-                    <h4><%= post.Title %></h4>
-                    <p><%= post.Body %></p>
-                    <p><%= post.date %></p>
-                    <p><%= post.privacy %> can see this post</p>
+                    <h4 class="post_title"><%= post.Title %></h4>
+                    <p class="post_body"><%= post.Body %></p>
+                    <p class="post_date"><%= post.date %></p>
+                    <p class="post_privacy"><%= post.privacy %> can see this post</p>
                     <form action="/admin/comment" method="post">
                         <input type="Text" id="Content" name="Content" placeholder="Type a comment" required>
                         <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
-                        <button type="submit" class="btn"> Post </button>
+                        <button type="submit" class="post_button"> Post </button>
                     </form>
                     <p id="like_counter"> <%= post.likes.length %> people have liked this post. </p>
-                    <button type="button" id="like_button" class="btn" onclick="myfunction('<%= post._id %>')"> Like </button>
+                    <button type="button" id="like_button" class="post_button" onclick="myfunction('<%= post._id %>')"> Like </button>
                     
                     <!--<form action="/admin/like">
                         <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
@@ -64,12 +64,14 @@
                     <% console.log("id:",id); %>
                     <% console.log("comments:",comments); %>
                     <% u = user_map[comment.user_id]; %>
-                    <li>
-                        <% if (u){ %>
-                            <header><%= u.fname %> <%= u.lname %></header>
-                        <% } %>
-                        <p><%= comment.content %></p>
-                        <p><%= comment.date %></p>
+                    <li class="comment_li">
+                        <div class="comment_div">
+                            <% if (u){ %>
+                                <header class="comment_name"><%= u.fname %> <%= u.lname %></header>
+                            <% } %>
+                            <p class="comment_body"><%= comment.content %></p>
+                            <p class="comment_date"><%= comment.date %></p>
+                        </div>
                     </li>
                     <% }) %>
                 </ul>           
