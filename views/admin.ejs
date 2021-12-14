@@ -11,9 +11,27 @@
 <p>Last Name : <%= user.lname %> </p>
 <p>Registered Time: <%= user.date %> </p>
 
+<script>
+    function myfunction(post_id){
+        let data = {post_id:post_id};
+        fetch("/admin/like", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+        }).then(res => {
+            return res.json();
+        }).then(data => {
+            console.log("Request complete! response:", data);
+            document.getElementById("like_counter").innerText = data.likes.length + " people have liked this post.";
+            document.getElementById("like_button").innerText = data.mode;
+        });
+    }
+</script>
+
 <body>
     <div>
         <h1>My Feed:</h1>
+        <!--display posts-->
         <ul>
             <% posts.forEach(function(post) { %>
             <li>
@@ -25,14 +43,22 @@
                     <h4><%= post.Title %></h4>
                     <p><%= post.Body %></p>
                     <p><%= post.date %></p>
-                    <form action=/admin/comment method="post">
+                    <p><%= post.privacy %> can see this post</p>
+                    <form action="/admin/comment" method="post">
                         <input type="Text" id="Content" name="Content" placeholder="Type a comment" required>
                         <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
                         <button type="submit" class="btn"> Post </button>
                     </form>
-                </div>
-                <ul>
+                    <p id="like_counter"> <%= post.likes.length %> people have liked this post. </p>
+                    <button type="button" id="like_button" class="btn" onclick="myfunction('<%= post._id %>')"> Like </button>
                     
+                    <!--<form action="/admin/like">
+                        <input type="Hidden" id="post_id" name="post_id" value= <%= post._id %>>
+                        
+                    </form>-->
+                </div>
+                <!--display comments-->
+                <ul>
                     <% post.comments.forEach(function(id) { %>
                     <% comment = comments[id]; %>
                     <% console.log("id:",id); %>

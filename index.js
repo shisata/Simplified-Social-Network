@@ -158,6 +158,27 @@ app.get('/admin',ensureAuthenticated,(req, res) => {
   //.then(users => parameters[]=user)
 });
 
+app.post('/admin/like',(req, res)=>{
+  u = req.user;
+  let mode = "like";
+  //console.log("post_id: user: ",req.body.post_id,u);
+  Post.findOne({_id:req.body.post_id}).then(p=>{
+    if (!p.likes.includes(u._id)){ //check if user has already liked the post
+      p.likes.push(u._id);         //add like to post if it has been liked
+      mode = "unlike";
+    } else {
+      var i = p.likes.indexOf(u._id);
+      while (i >= 0){
+        p.likes.splice(i,1);
+        i = p.likes.indexOf(u._id);
+      }
+      mode = "like";
+    }
+    console.log("# of likes: ",p.likes.length);
+    p.save().then(post => res.send({likes:p.likes,mode:mode})); //send the list of likes back
+  });
+});
+
 app.post('/admin/comment',(req, res)=>{
   u = req.user;
   Post.findOne({_id:req.body.post_id}).then(p=>{
@@ -171,7 +192,6 @@ app.post('/admin/comment',(req, res)=>{
     p.save().then(post => res.redirect('/admin'));
   }); //parent post of the comment
 });
-
 
 app.get('/login', (req, res) => {
   res.render('login',{})
