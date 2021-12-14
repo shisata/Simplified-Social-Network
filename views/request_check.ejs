@@ -22,33 +22,60 @@
 <p class="error"><%=  error_msg %> </p>         
 <% } %>
 
-<!-- UNUSED -->
 <!-- Lists Incoming Requests -->
 <body>
+    <div class="outer_most_div">
+    <%- include('./partials/menu_buttons') %>
 
-   
+    <!-- For every Request with receiver: Me -->
 
-    
-    <% requests.forEach(function(user) { %>
+    <% requests.forEach(function(request) { %>
+
         <li>
-            Sender
-            <%= user.sender_id %>
-            Receiver
-            <%= user.receiver_id %>    
+
+            <!-- Find First and Last names of Users -->
+            <% all_users.forEach(function(lookup_user) { %>
+                
+                <% if(lookup_user._id.equals(request.receiver_id)){ %>
+                    Receiver:
+                    <%=lookup_user.fname %>
+                    <%=lookup_user.lname %>
+
+                <% } %>
+
+            <% }); %>
+
+            <% all_users.forEach(function(lookup_user) { %>
+
+                <% if(lookup_user._id.equals(request.sender_id)){ %>
+                    Sender:
+                    <%=lookup_user.fname %>
+                    <%=lookup_user.lname %>        
+                <% } %>
+
+            <% }); %>
 
             <form action="/friends/add/accept" method="POST">
-                <input type="submit" name="response" value=1 />
-                <!-- <input type="hidden" name="friend_id" value=/> -->
+
+                <input type="hidden" name="friend_id" value="<%= request.sender_id %>">
+                <input type="hidden" name="req_id" value="<%= request._id %>">
+                <input type="submit" name="response" value=Accept />
+
+            </form>
+
+            <form action="/friends/add/decline" method="POST">
+
+                <input type="hidden" name="friend_id" value="<%= request.sender_id %>">
+                <input type="hidden" name="req_id" value="<%= request._id %>">
+                <input type="submit" name="response" value=Decline />
+
             </form>
 
         </li>
 
-        
-        
-        <!-- ADD Response and Friend ID fields (USED in add/manage) -->
-
-
     <% }); %>
+    </div>
+
 
 </body>
 

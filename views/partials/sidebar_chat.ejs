@@ -1,13 +1,111 @@
-<!-- Sidebar that shows friends to chat -->
-
-<%- include('./partials/menu_buttons') %>
-<!-- Check if received user data and message_log from server -->
 <div class="sidebar_chat">
+    <div class="title_container"> <h2 class="title">Friends chat (Testing)</h2> </div>
+
     <% friends_list.forEach((friend) => { %>
-        <a class="friend_display" href="/chat/<%= friend._id %>">
-            <div class="friend_name"> <%= friend.fname %> </div>
-            <div class="friend_email"> <%= friend.email %> </div>
-            <!-- TODO: display last message, check for sender name, date sent -->
-        </a>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
     <% }); %> 
+
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    <% friends_list.forEach((friend) => { %>
+        <div class="sidebar_friend_display" onclick="window.location.href=<%= '\'/chat/' + friend._id %>'">
+            <a class="sidebar_friend_name"> <%= friend.fname + ' ' + friend.lname %> </a>
+        </div>
+    <% }); %> 
+    
 </div>

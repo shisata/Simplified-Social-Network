@@ -84,6 +84,27 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
+/////// Support functions
+
+// Return a list of friends with their info on it
+async function getFriendsInfo(user){
+  var friends = [];
+  for(var i = 0; i < user.friends_list.length; i++){
+    try{
+      const friend = await User.findById(user.friends_list[i].toString());
+      // In case _id doesn't belong to any account 
+      if(friend){
+        friends.push({
+          _id: friend._id,
+          email: friend.email,
+          fname: friend.fname,
+          lname: friend.lname
+        })
+      } 
+    }  catch (err){console.log(err)}
+  }
+  return friends;
+}
 
 /////// Access URL controller
 app.get('/', (req, res) =>{
@@ -95,22 +116,41 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/admin',ensureAuthenticated,(req, res) => {
+  
   u = req.user;
 
   u.active = true;
   u.save();
 
   //find all visible posts that are public, from friends, or yourself
-  Post.find({$or: [{privacy:"public"},{privacy:"friends",owner:{$in:u.friends_list}},{privacy:{$in:["private","friends"]},owner:u._id}]}).sort({date:-1}).then(posts=>{
+  Post
+  .find({$or: [{privacy:"public"},{privacy:"friends",owner:{$in:u.friends_list}},{privacy:{$in:["private","friends"]},owner:u._id}]})
+  .sort({date:-1})
+  .then(posts=>{
     Comment.find().sort({date:-1}).then(comments=>{
-      let comment_map = {};
-      comments.forEach(comment => {comment_map[comment._id]=comment});
-      //console.log(comment_dict);
-      User.find().then(users=>{
+      User.find().then(async users=>{
+        let comment_map = {};
+        comments.forEach(comment => {comment_map[comment._id]=comment});
+        //console.log(comment_dict);
+        console.log("=====before user_map======")
         let user_map = {};
         users.forEach(user => {user_map[user._id]=user});
-        //console.log("user_map: ",user_map);
-        res.render('admin',{posts:posts,users:user_map,user:u,comments:comment_map});
+        console.log("=====before getFriendsInfo======")
+        const friends = await getFriendsInfo(u)
+        console.log("=====after getFriendsInfo======")
+
+        console.log("===>users: ", users) 
+        console.log("===>user_map: ",  user_map) 
+        console.log("===>friends: ", friends)
+
+        // Fixed conflict admin.ejs due to same name (users != user_map)
+        res.render('admin',{
+          posts: posts,
+          users: users, // List of users
+          user_map: user_map, 
+          user: u,
+          friends_list: friends,
+          comments: comment_map})
       });
     });
   });
@@ -170,23 +210,15 @@ app.get('/chat', ensureAuthenticated, async (req, res)  => {
   u = req.user;
   console.log(u);
   // Find each friend data
-  var friends = [];
-  for(var i = 0; i < u.friends_list.length; i++){
-    const friend = await User.findById(u.friends_list[i]);
-    // TODO: find last message, sender and date
-    friends.push({
-      _id: friend._id,
-      email: friend.email,
-      fname: friend.fname,
-      lname: friend.lname
-    })
-  }
+  const friends = await getFriendsInfo(u);
   console.log(friends)
-  res.render('chat_selection', {user: u, friends_list: friends});
+  res.render('chat_selection', {
+    user: u, 
+    friends_list: friends
+  });
 });
 
 app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
-  console.log("///////////////////Current User////////////////////")
   var user = req.user;
   const user_id = user._id.toString()
   const other_id = req.params.id.toString();
@@ -196,7 +228,6 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
   console.log("other_id: " + other_id)
 
   // Check if message_log is already established with the user that we are chatting with
-  // console.log("///////////////////Check Message_log////////////////////")
   try{
     var message_log_exists = false;
     // Loop through all message_log id to look for the one with both users
@@ -235,33 +266,15 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
       await message_log.save();
       message_log_id = message_log._id;
 
-      // console.log(console.log("////////////////////Created message log///////////////////"))
-      // console.log(user1)
-      // console.log(user2)
-      // console.log(message_log)
-      // console.log(console.log("////////////////////C///////////////////"))
+
     }   
   } catch (err){console.log(err)}
-  // console.log("///////////////////////////////////////")
+
     
   // Load all existing messages and render the page 
   try{
-    // console.log("///////////////////Found User////////////////////")
     const foundUser = await User.findById(user._id)
     const foundMessageLog = await MessageLog.findById(message_log_id)
-    // const foundMessages = await Message.findById('61b58fc4f1dd72001239c97d')
-    // await console.log(foundUser)
-    // await console.log(foundMessageLog)
-    // console.log("///////////////////////////////////////")
-  
-    // Pushing new message into log
-    // awabit foundMessageLog.messages.push(foundMessages)
-    // await foundMessageLog.save(function(err, result){
-    //   if(err){console.log(err)}
-    //   else{
-    //     console.log(result)
-    //   }
-    // })
 
     // Find both users name to send to client
     const u1 = await User.findById(foundMessageLog.user1_id);
@@ -294,53 +307,17 @@ app.get('/chat/:id', ensureAuthenticated, async (req, res) => {
       messages.push(message)
     }
 
-    // await User
-    //  .find({_id: '61b29a093f00ea001a3e70c2'})
-    //  .populate('message_logs')
-    //  .exec(function(err, user){
-    //    if (err) {return handleError(err)}
-    //    console.log(user);
-    //   });
+    // Finding friends info for sidebar
+    const friends = await getFriendsInfo(u);
+    console.log("=====>friends: ", friends);
 
-
-    // // Checking if messages in MessagesLog are schemas 
-    // await MessageLog
-    //  .findOne({_id: foundUser.message_logs[0], content: 'First message ever!!'})//()
-    //  .populate('messages')
-    //  .exec(function(err, message_log){
-    //   if (err) {return handleError(err)}
-    //   console.log(message_log);
-    //  });
-
-    // Checking if message_logs in User are schemas
-    // await User
-    //  .findOne()
-    //  .populate()
-    //  .exec(function(err, user){
-    //   if (err) {return handleError(err)}
-    //   console.log(user);
-    //  });
-    
-
-    // console.log("///////////////////////////////////////")
-
-
-    await res.render('chat', {
+    res.render('chat', {
       user : foundUser, 
       user_names: u_names, 
       message_log: foundMessageLog,
-      message_list: messages
+      message_list: messages,
+      friends_list: friends
     })
-
-    // console.log("///////////////////After Push////////////////////")
-    // console.log(await MessageLog.findById(foundUser.message_logs[0]))
-
-
-    // MessageLog.findById('61b533f0323caf001474ea4f')
-    // .populate()
-    // .then((result) => {
-    //   console.log(result.messages)
-    // }).catch((err) => {console.log(err)})
 
   } catch (err){console.log(err)}
 })
@@ -443,6 +420,7 @@ io.on('connection', function(socket) {
 
 /////// Post to URL controller
 app.post('/login', (req, res, next) => {
+  console.log("=====Inside ap.post /login======")
   passport.authenticate("local",{
     successRedirect : '/admin',
     failureRedirect : '/login',
@@ -518,18 +496,28 @@ app.post('/register', (req, res) => {
 app.get('/profile', ensureAuthenticated, (req, res) => {
 
   u = req.user;
+  
 
   Post.find({owner: u._id})
-    .then(posts => res.render('profile_page.ejs', { posts, user:u }))
+    .then(async posts => {
+      // Finding friends info for sidebar
+      const friends = await getFriendsInfo(u);
+      console.log("=====>friends: ", friends);
+
+      res.render('profile_page.ejs', { 
+        posts, 
+        user: u,
+        friends_list: friends,
+      })
+    })
     .catch(err => res.status(404).json({ msg: 'No Posts found' }));
 
 });
 
 
 // Submit a Post to "My" profile when Authenticated
-// TO-DO: Set Post privacy
 
-app.post('/profile/post', ensureAuthenticated, (req, res) => {
+app.post('/profile/post', ensureAuthenticated, async (req, res) => {
   u = req.user;
   const newPost = new Post({
     Title: req.body.Title,
@@ -538,7 +526,9 @@ app.post('/profile/post', ensureAuthenticated, (req, res) => {
     privacy: req.body.privacy
   })
 
-  newPost.save().then(post => res.redirect('/profile'));
+  newPost.save().then(post => {
+    res.redirect('/profile')
+  });
 });
 
 
@@ -550,14 +540,23 @@ app.get('/friends', ensureAuthenticated, (req, res) => {
   u = req.user;
   u_id = u._id
   
-  // TO-DO: Display Users That contain My ID in their friend's list
-
+  // Display Users That contain My ID in their friend's list
   User.find({"friends_list": u_id})
-      .then(users => res.render('friends.ejs',{ users, user:u }))
+      .then(async users => {
+        // Finding friends info for sidebar
+        const friends = await getFriendsInfo(u);
+        console.log("=====>friends: ", friends);
+
+        res.render('friends.ejs',{ 
+          users, 
+          user: u,
+          friends_list: friends,
+        })
+      })
 
 })
 
-// Add a friend (NO REQUEST)
+// Add a friend
 app.post('/friends/add', ensureAuthenticated, async (req, res) => {
   
   u = req.user;
@@ -565,104 +564,177 @@ app.post('/friends/add', ensureAuthenticated, async (req, res) => {
 
   // Find a Requested User's ID by Email:
 
-  const friend_lookup = await User.findOne(
-    { "email": requested_user_email}
-  )
+  const friend_lookup = await User.findOne({"email": requested_user_email});
 
-  // console.log("Requested User's Email: ", requested_user_email);
-  // console.log("Requested User's ObjectID: ", friend_lookup._id);
+  // Make sure user is not adding themselves
+  if(friend_lookup._id.toString() === u._id.toString()){
+    console.log("Cannot Add Yourself as a friend!");
+    return res.redirect('/friends')
+  }
 
-  // // Create a new Request Object
-  // // Fill processed information
-  // const friend_req = new Request({
-  //   sender_id: u._id,
-  //   receiver_id: friend_lookup._id,
-  //   req_status: 1 // Status: Request PENDING
-  // })
+  console.log("Requested User's Email: ", requested_user_email);
+  console.log("Requested User's ObjectID: ", friend_lookup._id);
 
+  // Create a new Request Object
+  // Fill processed information
+  const friend_req = new Request({
+    sender_id: u._id,
+    receiver_id: friend_lookup._id,
+    req_status: 1 // Status: Request PENDING
+  })
+  
+  // Locate Users
   const user1 = await User.findById(u._id);
   const user2 = await User.findById(friend_lookup._id);
 
-  await user1.friends_list.push(friend_lookup._id);
-  await user2.friends_list.push(u._id);
+  // Push a new Request Object into Both User's request storages:
+  await user1.friend_requests.push(friend_req._id);
+  await user2.friends_list.push(friend_req._id);
 
-  console.log(user1);
-  console.log(user2);
+  console.log("Friend Request Sent by Me to: ", friend_lookup.fname, " " ,friend_lookup.lname, " with ID: ", friend_lookup._id);
 
-
-  console.log("Friend Request Sent to: ", friend_lookup.fname, " " ,friend_lookup.lname, " with ID: ", friend_lookup._id);
-
+  // Request is not sent if User Does not exist
   await user1.save();
-  await user2.save().then(request => res.redirect('/friends'))
-    .catch(err => res.status(404).json({ msg: 'No User found' }));
+  await user2.save();
+  await friend_req.save().then(request => res.redirect('/friends'))
+    .catch(err => res.redirect('/friends'));
 
 })
 
 
-// Accept Incoming request (UNUSED)
-// app.post('/friends/add/accept', ensureAuthenticated, async (req, res) => {
+// Removes a friend selected in the menu.
+app.post('/friends/remove', ensureAuthenticated, async (req, res) => {
 
-//   // Incoming request has sender_id, receiver_id, status
-//   // Find the Existing Request and Update status with Response
-//   // Update Both user's friendships based on response
+  u = req.user;
+  friend_id = req.body.friend_id;
 
-//   u = req.user;
+  // Look up the Requested Friend ID
+  const friend_lookup = await User.findOne({"email": friend_id});
 
-//   console.log("Query variabless:", req.query);
+  // Find both User objects
+  const user1 = await User.findById(u._id);
+  const user2 = await User.findById(friend_lookup._id);
 
-//   const request = await Request.findOne({receiver_id: u._id, sender_id: friend_id})
-//   .exec(async function(err, request){
-//     if(err){return handleError(err)}
-//     try{
-//       const user1 = await User.findById(u._id);
-//       const user2 = await User.findById(friend_id);
+  await user1.friends_list.pull(friend_lookup._id);
+  await user2.friends_list.pull(u._id);
 
-//       console.log(request);
-//       console.log(user1);
-//       console.log(user2);
+  await user1.save()
+  await user2.save()
 
-//       if(u._id !== friend_id){
+  res.redirect('/friends');
+})
 
-//         await request.updateOne({ $set: {req_status: 2} });
-//         await user1.friends_list.push(req.body.friend_id );
-//         await user2.friends_list.push(u._id);
 
-//         await user1.save()
-//         await user2.save()
+// Accept Incoming request
+app.post('/friends/add/accept', ensureAuthenticated, async (req, res) => {
+
+  // Incoming request has sender_id, receiver_id, status
+  // Finds the Existing Request and Update status
+  // Updates Both user's friendships based on response
+
+  u = req.user;
+  friend_id = req.body.friend_id;
+  req_id = req.body.req_id;
+
+  // Finds an Incoming Request with Status = 1 (PENDING)
+  const request = await Request.findOne({"_id": req_id})
+  .exec(async function(err, request){
+    if(err){console.log(err)}
+    try{
+
+      // Find both User objects
+      const user1 = await User.findById(u._id);
+      const user2 = await User.findById(friend_id);
+
+      console.log(request);
+      console.log(user1);
+      console.log(user2);
+
+      // Make sure adding a different user, not myself
+      if(u._id !== friend_id){
+
+        // Update the Request Object Status to 2 (FRIENDS)
+        await request.update({ $set: {req_status: 2} });
+
+        // Update the friend lists on acceptance
+        await user1.friends_list.push(req.body.friend_id );
+        await user2.friends_list.push(u._id);
+
+        await user1.save()
+        await user2.save()
   
-//         res.status(400)
-//       }
-//       else 
-//       {
-//         res.status(400)
-//       }
-//     }catch(err){console.log(err)}
-//   })
+        res.redirect('/friends')
+      }
+      else 
+      {
+        res.redirect('/friends')
+      }
+    }catch(err){console.log(err)}
+  })
 
-//   // If Declined
-//   // Set Status to 2 and update the Friendships for BOTH users
+})
 
-//   // Satisfy the request
-//   // Update Request Object' Status
-    
 
-// })
+
+
+
+
+// Decline Incoming request
+app.post('/friends/add/decline', ensureAuthenticated, async (req, res) => {
+
+  // Incoming request has sender_id, receiver_id, status
+  // Finds the Existing Request and Update status
+  // Updates Both user's friendships based on response
+
+  u = req.user;
+  friend_id = req.body.friend_id;
+  req_id = req.body.req_id;
+
+  // Finds an Incoming Request with Status = 1 (PENDING)
+  const request = await Request.findOne({"_id": req_id})
+  .exec(async function(err, request){
+    if(err){console.log(err)}
+    try{
+
+      // Find both User objects
+      const user1 = await User.findById(u._id);
+      const user2 = await User.findById(friend_id);
+
+      console.log(request);
+      console.log(user1);
+      console.log(user2);
+
+
+      // Remove request for each user
+      await user1.friend_requests.pull(req_id)
+      await user2.friend_requests.pull(req_id)
+
+      // Remove the request object completely
+      await request.remove();
+
+      await user1.save();
+      await user2.save();
+
+      res.redirect('/friends');
+
+
+    }catch(err){console.log(err)}
+  })
+
+})
 
 
 
 // Check for Incoming Friend Requests
-// UNUSED
 app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
   u = req.user;
   
-  User.find({"friend_reqs." : u._id})
-
-  // Looks up PENDING (1) requests sent in my name
-  // Return 404 if nothing found
-  Request.find({receiver_id : u._id, req_status: 1})
-    .then(requests => res.render('request_check.ejs',{requests, user:u }))
-    .catch(err => res.status(404).json({ msg: 'No Requests Found' }));
+  User.find().then(users=>{
+    Request.find({receiver_id : u._id, req_status: 1}).then(requests=>{
+      res.render('request_check.ejs',{requests, user:u, all_users:users})
+    })
+  })
 
 })
 
@@ -677,3 +749,5 @@ app.use((req, res) => {
 const PORT = 3000; //Port of backend container
 
 server.listen(PORT, () => console.log('Server running...'));
+
+

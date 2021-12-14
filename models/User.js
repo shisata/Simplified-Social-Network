@@ -1,7 +1,9 @@
 //// File description: Schema for User in MongoDB
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const MessageLog = require('./MessageLog')
+const MessageLog = require('./MessageLog');
+
+const Request = require('./Request');
 
 const UserSchema = new Schema({
 
@@ -35,6 +37,12 @@ const UserSchema = new Schema({
     type: [mongoose.ObjectId],
   },
 
+  // Friend Requests
+  friend_requests:{
+    type: [mongoose.ObjectId],
+    default:[]
+  },
+
   // Post IDs belonging to a user
   posts:{
     type: [mongoose.ObjectId],
@@ -63,15 +71,6 @@ const UserSchema = new Schema({
 
 })
 
-
-
-// function updateFriendships(user1, user2) {
-//   const schema = {
-//       name: Joi.string().min(3).required()
-//   };
-
-//   return Joi.validate(platform, schema);
-// }
 
 
 module.exports = User = mongoose.model('user', UserSchema);

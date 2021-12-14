@@ -1,15 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
 
+/***************General settings***************/
+:root{
+  --highlight_color: #50d0e7;
+  --highlight_color_light: #e3f6fa;
+  --left_border_highlight_width: 10px;
+
+  --title_size: 32px;
+  --statement_size: 20px;
+  --word_size: 14px;
+}
 *{
   /* box-sizing: border-box;
   /* width: 100%; */
   /* padding: 0;
   margin: 0; */ 
   background-color: #e4e4e4;
+  font-size: var(--word_size);
+  font-family: monospace;
+
+  /* Align everything in the middle */
+  /* margin:auto;
+  width: 100%; */
   /* border: solid black 10px; */
 }
 
+h1{
+  font-size: var(--title_size);
+}
+
+h2{
+  font-size: var(--statement_size);
+}
+
+.outer_most_div{
+  padding: 80px 200px 80px 200px
+}
+
+/******************************/
+
 /***************Menu Buttons***************/
+
 
 .navigation-header{
   /* background-color: rgb(26, 27, 29); */
@@ -19,10 +50,10 @@
   margin: 0;
 }
 
-.navigation-ul li, .navigation-ul a, .logout-button{
+.navigation-ul li, .navigation-ul li a, .logout-button{
   font-family: monospace;
   font-weight: bold;
-  font-size: 16px;
+  font-size: var(--statement_size);
   /* background-color: rgb(26, 27, 29); */
   /* font-style: #f2ebe9; */
   text-decoration: none;
@@ -63,59 +94,110 @@
 .navigation-ul li a:hover, .logout-button:hover{
   /* background-color:#e2b786; */
   padding: 10px 25px;
-  background-color:#51d1e7;
+  background-color:var(--highlight_color);
   border: none;
   border-radius: 20%;
 }
 
 /******************************/
 
-.btn {
-    padding: 10px;
-    margin: 0 auto;
-    display: flex;
+/***************Sidebar chat***************/
 
-}
-.error{ 
-  color:red;
-  font-size: large;
+.sidebar_chat{
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  /* background-color:rgb(24, 25, 26); */
+  overflow: hidden;
+  padding: 30px;
+  overflow-y: scroll;
+  /* border-left: var(--highlight_color) 5px; */
+  /* background-color: var(--highlight_color_light); */
 }
 
-input[type=text],input[type=email],input[type=password], select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
+.sidebar_chat > *{
+  /* background-color: var(--highlight_color_light); */
   
-input[type=submit],button {
-  width: 100%;
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-input[type=submit]:hover ,button:hover {
-  background-color: #45a049;
+.title_container{
+  background-color: var(--highlight_color);
+  /* justify-content: center; */
+  align-self: center;
 }
+
+.title{
+  font-family: monospace;
+  font-weight: bold;
+  font-size: var(--statement_size);
+}
+
+.sidebar_friend_display{
+  width: 200px;
+  height: 50px;
+  overflow: hidden;
+}
+
+
+.sidebar_friend_name{
+  /* padding: 5px 5px 5px 5px; */
+  text-decoration: none;
+  font-family: monospace;
+  overflow:hidden;
+  /* width: 150px; */
+  display: block;
+  padding: 12px 12px 15px 15px;
+}
+
+.sidebar_friend_display:hover{
+  cursor: pointer;
+  /* background-color:#e3f6fa; */
+}
+
+.sidebar_friend_name:hover{
+  /* color:#51d1e7; */
+  background-color:var(--highlight_color_light);
+  border-radius: 10%;
+}
+
+/******************************/
 
 /***************Chat Box***************/
 
- div {
+.friend_display{
+  width: 200px;
+  height: 90px;
+  border-left: var(--highlight_color_light) var(--left_border_highlight_width);
+  padding-left: 40px;
+  /* padding: 20px; */
+  /* border-radius: 10px; */
+}
+
+.friend_display:hover{
+  cursor: pointer;
+  border-left: var(--highlight_color) var(--left_border_highlight_width);
+  /* border-right-width: var(--left_border_highlight_width); */
+}
+
+.friend_display div:hover{
+  cursor: pointer;
+  background-color: var(--highlight_color);
+}
+
+.friend_name:hover{
+  color: var(--highlight_color_light);
+}
+
+ /* div {
   border-radius: 5px;
-  /* background-color: #f2f2f2; */
-  padding: 20px;
-} 
+  /* background-color commented out: #f2f2f2; */
+  /* padding: 20px;
+}  */ */
 
 
-.message_box.their_message{
+/* .message_box.their_message{
   background-color: grey;
   margin-right: auto;
 }
@@ -125,7 +207,7 @@ input[type=submit]:hover ,button:hover {
 }
 .message_box:hover, .friend_display:hover {
   background-color: lightgray;
-}
+} */
 /******************************/
 
 
@@ -139,4 +221,44 @@ input[type=submit]:hover ,button:hover {
   color: aqua;
 }
 
-/**************Posts****************/
+/******************************/
+
+.btn {
+  padding: 10px;
+  width: 50%;
+  /* margin: 0 auto; */
+  margin: 8px 5px 5px 0px ;
+  display: flex;
+
+}
+.error{ 
+  color:red;
+  font-size: large;
+}
+
+input[type=text],input[type=email],input[type=password], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0 auto;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit],button {
+  width: 50%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0 auto;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover ,button:hover {
+  background-color: var(--highlight_color);
+}
+
+/****************POSTS****************/

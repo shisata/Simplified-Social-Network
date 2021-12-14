@@ -1,7 +1,11 @@
 <!-- Main page after logged in -->
 <%- include('./partials/header') %>
+<%- include('./partials/sidebar_chat') %>
 
-<h2> Welcome <%= user.fname %></h2>
+<div class="outer_most_div">
+<%- include('./partials/menu_buttons') %>
+
+<h2>Welcome <%= user.fname %></h2>
 <p>Email : <%= user.email %></p>
 <p>First Name : <%= user.fname %> </p>
 <p>Last Name : <%= user.lname %> </p>
@@ -24,7 +28,6 @@
     }
 </script>
 
-<%- include('./partials/menu_buttons') %>
 <body>
     <div>
         <h1>My Feed:</h1>
@@ -37,7 +40,7 @@
                     <% if (owner){ %>
                         <header class="post_name"><%= owner.fname %> <%= owner.lname %></header>
                     <% } %>
-                    <p class="post_title"><%= post.Title %></p>
+                    <h4 class="post_title"><%= post.Title %></h4>
                     <p class="post_body"><%= post.Body %></p>
                     <p class="post_date"><%= post.date %></p>
                     <p class="post_privacy"><%= post.privacy %> can see this post</p>
@@ -55,16 +58,20 @@
                     </form>-->
                 </div>
                 <!--display comments-->
-                <ul>
+                <ul class="comment_ul">
                     <% post.comments.forEach(function(id) { %>
                     <% comment = comments[id]; %>
-                    <% u = users[comment.user_id]; %>
-                    <li>
-                        <% if (u){ %>
-                            <header><%= u.fname %> <%= u.lname %></header>
-                        <% } %>
-                        <p><%= comment.content %></p>
-                        <p><%= comment.date %></p>
+                    <% console.log("id:",id); %>
+                    <% console.log("comments:",comments); %>
+                    <% u = user_map[comment.user_id]; %>
+                    <li class="comment_li">
+                        <div class="comment_div">
+                            <% if (u){ %>
+                                <header class="comment_name"><%= u.fname %> <%= u.lname %></header>
+                            <% } %>
+                            <p class="comment_body"><%= comment.content %></p>
+                            <p class="comment_date"><%= comment.date %></p>
+                        </div>
                     </li>
                     <% }) %>
                 </ul>           
@@ -72,4 +79,40 @@
             <% }); %>
         </ul>
     </div>
+    <div>
+        <h1>All users</h1>
+        <ul>
+
+            <% logged_in_usr = user._id %>
+
+            <% users.forEach(function(user) { %>
+                <li>
+                    <%= user.email %>
+                    <% if(user.active==true) { %>
+                        online
+                        <% } else { %>
+                            offline
+                            <% } %>
+
+
+                    <% if((logged_in_usr in user.friends_list) === false) { %>
+                    
+                        <form action="/friends/add/" method="POST">
+
+                            <input type="hidden" name="receiver_id" value="<%= user.email%>">
+                            <input type="submit" name="response" value=Add />
+            
+                        </form>
+
+                    <% } %>
+        
+                    
+
+                </li>
+                <% }); %>
+        </ul>
+    </div>
+    
 </body>
+
+</div>
