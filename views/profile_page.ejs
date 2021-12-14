@@ -10,7 +10,7 @@
 </head>
 <% if(typeof errors!='undefined'){ %>
 <%      errors.forEach(function(error) { %>
-<p class="error"><%=  error.msg           %></p>
+<p class="error"><%= error.msg %></p>
 <% }) %>
 <% } %>
 
@@ -21,25 +21,28 @@
   <% if(error_msg!=''){ %>
     <p class="error"><%=  error_msg %> </p>         
     <% } %>
-
-
-<!-- 
-  Profile Page
-
-  1. User can see their own posts on a Profile page
-  2. User can make posts on their profile page
-  3. Privacy of each post can be changed to Public, Friends or Private
-  
--->
-
-
+    
+    <%- include('./partials/sidebar_chat') %>
+    
+    <!-- 
+      Profile Page
+      
+      1. User can see their own posts on a Profile page
+      2. User can make posts on their profile page
+      3. Privacy of each post can be changed to Public, Friends or Private
+      
+    -->
+    
+    
+    
 
 <body>
+  <div class="outer_most_div">
+  <%- include('./partials/menu_buttons') %>
 
   <h1>My Profile</h1>
 
   <h2> Welcome <%= user.email %>!</h2>
-  <%- include('./partials/menu_buttons') %>
   <div>
 
   <form action="/profile/post" method="POST">
@@ -55,22 +58,19 @@
       
       <label>Attachment</label>
       <input type ="text" id = 'Img' name="Img">
-      
 
       <select name="privacy" id="privacy">
-        <option value="">--Post Privacy--</option>
-        <option value="public">Public</option>
-        <option value="private">Private</option>
-        <option value="friends">Friends</option>
+        <option value="privacy">--Who can see this post?--</option>
+        <option value="public">Everyone</option>
+        <option value="friends">My Friends</option>
+        <option value="private">Only Me</option>
       </select>
-        
 
       <button type ="reset" class="btn">Reset</button>
       <button type ="submit" class="btn">Submit</button>
 
     </fieldset>
   </form>
-
 
   <h3>My Posts:</h3>
   <ul>
@@ -81,13 +81,12 @@
           <h4><%= post.Title %></h4>
           <p><%= post.Body %></p>
           <p><%= post.date %></p>
+          
         </div>
       </li>
       <% }); %>
   </ul>
-  
-
-
+  </div>
 </body>
 
 </html>
