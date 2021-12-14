@@ -2,26 +2,27 @@
 <%- include('./partials/header') %>
 <%- include('./partials/menu_buttons') %>
 <script src="/socket.io/socket.io.js"></script>
+<div class="outer_most_div">
+    <h1> Chat</h1>
+    <!-- Check if received user data and message_log from server -->
 
-<h1> Chat</h1>
-<!-- Check if received user data and message_log from server -->
+    <div class="chat_display_div" id="chat_display_id">
+        <%- include('./partials/message_box') %>
+    </div>
 
-<div class="chat_display_div" id="chat_display_id">
-    <%- include('./partials/message_box') %>
+    <div class="chat_input_div">
+        <input id = "message_content" type = "text" placeholder = "Enter message.." required/>
+        <!-- <textarea name="message-content" id="message-content" placeholder="Enter message..." cols="30" rows="10"></textarea> -->
+        <button id = "send_button" class="btn" onclick="sendMessage()">Send</button>
+    </div>
+
+    <% var user1_id = message_log.user1_id; var user2_id = message_log.user2_id;  %> 
+
+    <input id="message_log_id" type="hidden" value = <%= message_log._id %>  > </input>
+    <input id="my_id" type="hidden" value = <%= user._id.toString() %>> </input>
+    <input id="their_id" type="hidden" value = <%= (user._id.toString() == user1_id.toString()) ? user2_id.toString() : user1_id.toString() %>></input> <!-- Check for which one is the other side's id -->
+
 </div>
-
-<div class="chat_input_div">
-    <input id = "message_content" type = "text" placeholder = "Enter message.." required/>
-    <!-- <textarea name="message-content" id="message-content" placeholder="Enter message..." cols="30" rows="10"></textarea> -->
-    <button id = "send_button" class="btn" onclick="sendMessage()">Send</button>
-</div>
-
-<% var user1_id = message_log.user1_id; var user2_id = message_log.user2_id;  %> 
-
-<input id="message_log_id" type="hidden" value = <%= message_log._id %>  > </input>
-<input id="my_id" type="hidden" value = <%= user._id.toString() %>> </input>
-<input id="their_id" type="hidden" value = <%= (user._id.toString() == user1_id.toString()) ? user2_id.toString() : user1_id.toString() %>></input> <!-- Check for which one is the other side's id -->
-
 <script>
     ////// SocketIO
     const socket = io();
