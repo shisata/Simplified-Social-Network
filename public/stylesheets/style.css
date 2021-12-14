@@ -29,6 +29,14 @@ h1{
   font-size: var(--title_size);
 }
 
+h2{
+  font-size: var(--statement_size);
+}
+
+.outer_most_div{
+  padding: 80px 200px 80px 200px
+}
+
 /******************************/
 
 /***************Menu Buttons***************/
@@ -97,7 +105,7 @@ h1{
 
 .sidebar_chat{
   height: 100%;
-  width: 250px;
+  width: 200px;
   position: fixed;
   top: 0;
   right: 0;
@@ -105,6 +113,12 @@ h1{
   overflow: hidden;
   padding: 30px;
   overflow-y: scroll;
+  /* border-left: var(--highlight_color) 5px; */
+  /* background-color: var(--highlight_color_light); */
+}
+
+.sidebar_chat > *{
+  /* background-color: var(--highlight_color_light); */
   
 }
 
@@ -150,42 +164,6 @@ h1{
 
 /******************************/
 
-.btn {
-    padding: 10px;
-    margin: 0 auto;
-    display: flex;
-
-}
-.error{ 
-  color:red;
-  font-size: large;
-}
-
-input[type=text],input[type=email],input[type=password], select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-  
-input[type=submit],button {
-  width: 100%;
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-input[type=submit]:hover ,button:hover {
-  background-color: #45a049;
-}
-
 /***************Chat Box***************/
 
 .friend_display{
@@ -208,8 +186,8 @@ input[type=submit]:hover ,button:hover {
   background-color: var(--highlight_color);
 }
 
-.friend_name{
-  font-weight: bold;
+.friend_name:hover{
+  color: var(--highlight_color_light);
 }
 
  /* div {
@@ -244,3 +222,42 @@ input[type=submit]:hover ,button:hover {
 }
 
 /******************************/
+
+
+.btn {
+  padding: 10px;
+  width: 50%;
+  /* margin: 0 auto; */
+  margin: 8px 5px 5px 0px ;
+  display: flex;
+
+}
+.error{ 
+  color:red;
+  font-size: large;
+}
+
+input[type=text],input[type=email],input[type=password], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0 auto;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit],button {
+  width: 50%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0 auto;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover ,button:hover {
+  background-color: var(--highlight_color);
+}
