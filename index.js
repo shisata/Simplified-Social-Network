@@ -541,6 +541,39 @@ app.post('/profile/post', ensureAuthenticated, async (req, res) => {
 
 
 
+app.post('/profile/namechange', ensureAuthenticated, async (req, res) => {
+
+  u = req.user;
+  new_fname = req.body.f_name_new;
+  new_lname = req.body.l_name_new;
+
+  await User.find({"_id":u._id}).then
+  (async user => {
+  
+    if((new_fname === "") && (new_lname === "")){
+      return res.redirect('/profile')
+    }
+    if(new_fname === ""){
+      await user.updateOne({ $set: {l_name: new_lname}});
+      return res.redirect('/profile')
+    }
+    else if(new_lname === ""){
+      await user.updateOne({ $set: {f_name: new_fname}});
+      return res.redirect('/profile')
+    }
+    else{
+
+      await user.updateOne({ $set: {f_name: new_fname, l_name: new_lname}});
+
+      res.redirect('/profile')
+
+    }
+  })
+  .catch(err => res.status(404).json({ msg: 'Can not update the name' }));
+
+})
+
+
 // FRIENDS PAGE
 // Shows Friends of a Current User
 app.get('/friends', ensureAuthenticated, (req, res) => {
@@ -686,8 +719,6 @@ app.post('/friends/add/accept', ensureAuthenticated, async (req, res) => {
 
 
 
-
-
 // Decline Incoming request
 app.post('/friends/add/decline', ensureAuthenticated, async (req, res) => {
 
@@ -751,6 +782,20 @@ app.get('/friends/requests', ensureAuthenticated, (req, res) => {
 
 })
 
+// Dummy settings
+app.get('/settings', (req, res) => {
+
+  u = req.user;
+
+  res.render('settings.ejs', {user:u})
+
+})
+
+// Under Construction Page
+app.get('/construction', (req, res) => {
+
+  res.render('construction.ejs')
+})
 
 
 // Page in case user access wrong url

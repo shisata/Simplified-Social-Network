@@ -1,0 +1,28 @@
+<%- include('./partials/header') %>
+
+<div class="outer_most_div">
+<%- include('./partials/menu_buttons') %>
+
+<h2>Welcome <%= user.fname %></h2>
+<p>Email : <%= user.email %></p>
+<p>First Name : <%= user.fname %> </p>
+<p>Last Name : <%= user.lname %> </p>
+<p>Registered Time: <%= user.date %> </p>
+
+<h1>
+    Settings
+</h1>
+
+<header class="navigation-header">
+    <nav class="navigation-bar" id="navigation-bar">
+        <div class="filler"></div>
+        <ul class="navigation-ul">
+            <li><a class="navigation-button" href="/construction">Privacy</a></li>
+            <li><a class="navigation-button" href="/construction">Personalization</a></li>
+            <li><a class="navigation-button" href="/construction">Support</a></li>
+            <li><a class="navigation-button" href="/settings">Go Back</a></li>
+        </ul>
+    </nav>
+</header>
+<br>
+
