@@ -3,9 +3,9 @@
 A simplified social network webapp for our final group project in CMPT 470. It allows users to connect with each other, make new friends, share moments through posts, and chat in real time.
 
 ## Implementation
-Front-End Server: nginx
-Back-End Server: NodeJS using ExpressJS Framework 
-Database: MongoDB
+- Front-End Server: nginx
+- Back-End Server: NodeJS using ExpressJS Framework 
+- Database: MongoDB
 
 ## Features:
 
@@ -34,8 +34,8 @@ This is the page where you can send friend requests. Friend requests are sent by
 
 ## Sample user
 You can use a preset user with:
-email:diobrando@diobrando.wry
-password:diobrando
+- email:diobrando@diobrando.wry
+- password:diobrando
 
 
 ## How to run
