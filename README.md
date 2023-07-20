@@ -1,9 +1,11 @@
+## What is this project about?
+
+A simplified social network webapp for our final group project in CMPT 470. It allows users to connect with each other, make new friends, share moments through posts, and chat in real time.
+
 ## Implementation
 Front-End Server: nginx
-Back-End Server: NodeJS with Express 
+Back-End Server: NodeJS using ExpressJS Framework 
 Database: MongoDB
-## What is this project about?
-A simplified social network webapp. It lets users connect with each other, make new friends, share moments through posts, and chat.
 
 ## Features:
 
