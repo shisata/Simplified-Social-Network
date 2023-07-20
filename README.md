@@ -2,6 +2,10 @@
 
 A simplified social network webapp for our final group project in CMPT 470. It allows users to connect with each other, make new friends, share moments through posts, and chat in real time.
 
+![image](https://github.com/shisata/Simplified-Social-Network/assets/46393255/30acb873-c67b-4c9e-a492-5d09afa9b113)
+
+
+
 ## Implementation
 - Front-End Server: nginx
 - Back-End Server: NodeJS using ExpressJS Framework 
@@ -63,3 +67,9 @@ Code: https://github.com/bradtraversy/docker-node-mongo
 ```
 
 ##
+
+## Contribution
+- Quoc Tuong Tran (qttran)
+- Ilia Krasavin (ikrasavi)
+- Zi Heng Wang (zhw)
+- Liangsong Wang (lwa115)
